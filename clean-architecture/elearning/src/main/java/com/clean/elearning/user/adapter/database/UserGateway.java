@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -25,6 +26,13 @@ class UserGateway implements UserRepository, UserDetailsService {
         return userSchemaRepository.findAll().stream()
                 .map(UserSchema::toUser)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> getUserByEmail(@NonNull String email) {
+        return userSchemaRepository.findByEmail(email)
+                .map(UserSchema::toUser);
     }
 
     @Override

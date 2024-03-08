@@ -4,6 +4,6 @@ import com.clean.elearning.user.usecase.model.UpdateUserModel;
 
 public interface UpdateUserUseCase {
 
-    void updateUser(UpdateUserModel updateUserModel);
+    void updateUser(String email, UpdateUserModel updateUserModel);
 
 }

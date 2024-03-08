@@ -5,7 +5,10 @@ import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
 import com.clean.elearning.user.adapter.ui.UserListPresenter;
 import com.clean.elearning.user.adapter.ui.UserViewModel;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -50,16 +53,29 @@ public class UserListView extends VerticalLayout {
         grid.addColumn(UserViewModel::lastName).setHeader("Last Name");
         grid.addColumn(UserViewModel::email).setHeader("Email");
         grid.addColumn(UserViewModel::role).setHeader("Role");
-        createEditButtonColumn();
         grid.getColumns().forEach(column -> column.setAutoWidth(true));
+        createEditButtonColumn();
+        createDeleteButtonColumn();
     }
 
     private void createEditButtonColumn() {
         grid.addComponentColumn(user -> {
-            final var editButton = new Button("Edit");
+            final var editIcon = new Icon(VaadinIcon.EDIT);
+            final var editButton = new Button(editIcon);
+            editButton.addThemeVariants(ButtonVariant.LUMO_ICON);
             editButton.addClickListener(click -> userListPresenter.handleEditUserButtonClick(user));
             return editButton;
-        });
+        }).setWidth("30px");
+    }
+
+    private void createDeleteButtonColumn() {
+        grid.addComponentColumn(user -> {
+            final var deleteIcon = new Icon(VaadinIcon.TRASH);
+            final var deleteButton = new Button(deleteIcon);
+            deleteButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
+            deleteButton.addClickListener(click -> userListPresenter.handleDeleteUserButtonClick(user));
+            return deleteButton;
+        }).setWidth("30px");
     }
 
 }

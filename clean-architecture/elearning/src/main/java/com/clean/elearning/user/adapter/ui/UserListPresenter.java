@@ -1,7 +1,6 @@
 package com.clean.elearning.user.adapter.ui;
 
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
-import com.clean.elearning.user.domain.Role;
 import com.clean.elearning.user.infrastructure.view.UserListView;
 import com.clean.elearning.user.usecase.BrowseUsersUseCase;
 import lombok.AccessLevel;
@@ -34,13 +33,16 @@ public class UserListPresenter {
         userListView.navigateToEditUserFormView(updateUserRequest);
     }
 
+    @Transactional
+    public void handleDeleteUserButtonClick(@NonNull UserViewModel user) {
+        handlePageLoad();
+    }
+
     private UpdateUserRequest createUpdateUserRequest(UserViewModel user) {
-        final var role = Role.valueOf(user.role().toUpperCase());
         final var updateUserRequest = new UpdateUserRequest();
         updateUserRequest.setFirstName(user.firstName());
         updateUserRequest.setLastName(user.lastName());
         updateUserRequest.setEmail(user.email());
-        updateUserRequest.setRole(role);
         return updateUserRequest;
     }
 

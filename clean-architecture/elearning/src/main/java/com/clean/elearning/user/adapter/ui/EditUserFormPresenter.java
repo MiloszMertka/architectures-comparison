@@ -20,9 +20,16 @@ public class EditUserFormPresenter {
     private EditUserFormView editUserFormView;
 
     @Transactional
-    public void handleSaveUserButtonClick(@NonNull UpdateUserRequest updateUserRequest) {
-        if (editUserFormView.isFormValid()) {
-            updateUserUseCase.updateUser(updateUserRequest);
+    public void handleSaveUserButtonClick(@NonNull String userEmail, @NonNull UpdateUserRequest updateUserRequest) {
+        if (!editUserFormView.isFormValid()) {
+            return;
+        }
+
+        try {
+            updateUserUseCase.updateUser(userEmail, updateUserRequest);
+            editUserFormView.navigateToUserListView();
+        } catch (Exception exception) {
+            editUserFormView.showErrorMessage(exception.getMessage());
         }
     }
 

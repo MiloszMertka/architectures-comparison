@@ -1,7 +1,5 @@
 package com.clean.elearning.user.usecase.model;
 
-import com.clean.elearning.user.domain.Role;
-
 public interface UpdateUserModel {
 
     String getFirstName();
@@ -9,7 +7,5 @@ public interface UpdateUserModel {
     String getLastName();
 
     String getEmail();
-
-    Role getRole();
 
 }
