@@ -1,4 +1,4 @@
-package com.clean.elearning.user.usecase;
+package com.clean.elearning.user.usecase.port;
 
 public interface PasswordHasher {
 

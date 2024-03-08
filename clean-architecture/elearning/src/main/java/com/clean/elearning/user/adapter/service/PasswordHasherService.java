@@ -1,6 +1,6 @@
-package com.clean.elearning.user.adapter;
+package com.clean.elearning.user.adapter.service;
 
-import com.clean.elearning.user.usecase.PasswordHasher;
+import com.clean.elearning.user.usecase.port.PasswordHasher;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

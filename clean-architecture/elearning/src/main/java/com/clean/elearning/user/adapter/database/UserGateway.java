@@ -1,4 +1,4 @@
-package com.clean.elearning.user.adapter;
+package com.clean.elearning.user.adapter.database;
 
 import com.clean.elearning.user.domain.User;
 import com.clean.elearning.user.domain.UserRepository;
@@ -28,6 +28,13 @@ class UserGateway implements UserRepository, UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public boolean userExistsByEmail(@NonNull String email) {
+        return userSchemaRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
     public void saveUser(@NonNull User user) {
         final var userSchema = UserSchema.fromUser(user);
         userSchemaRepository.save(userSchema);

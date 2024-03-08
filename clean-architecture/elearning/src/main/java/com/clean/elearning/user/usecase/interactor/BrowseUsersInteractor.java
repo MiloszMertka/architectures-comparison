@@ -1,7 +1,8 @@
-package com.clean.elearning.user.usecase;
+package com.clean.elearning.user.usecase.interactor;
 
 import com.clean.elearning.user.domain.User;
 import com.clean.elearning.user.domain.UserRepository;
+import com.clean.elearning.user.usecase.BrowseUsersUseCase;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.clean.elearning.user.adapter;
+package com.clean.elearning.user.adapter.database;
 
 import com.clean.elearning.user.domain.Role;
 import com.clean.elearning.user.domain.User;

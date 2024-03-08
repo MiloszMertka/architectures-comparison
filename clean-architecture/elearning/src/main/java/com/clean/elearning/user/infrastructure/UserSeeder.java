@@ -4,7 +4,7 @@ import com.clean.elearning.shared.seeder.Seeder;
 import com.clean.elearning.user.domain.Role;
 import com.clean.elearning.user.domain.User;
 import com.clean.elearning.user.domain.UserRepository;
-import com.clean.elearning.user.usecase.PasswordHasher;
+import com.clean.elearning.user.usecase.port.PasswordHasher;
 import com.github.javafaker.Faker;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

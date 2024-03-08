@@ -1,6 +1,6 @@
 package com.clean.elearning.shared.view;
 
-import com.clean.elearning.user.infrastructure.UserListView;
+import com.clean.elearning.user.infrastructure.view.UserListView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
