@@ -49,6 +49,12 @@ class UserGateway implements UserRepository, UserDetailsService {
     }
 
     @Override
+    @Transactional
+    public void deleteUserByEmail(@NonNull String email) {
+        userSchemaRepository.deleteByEmail(email);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         return userSchemaRepository.findByEmail(email)

@@ -10,4 +10,6 @@ public interface UserSchemaRepository extends JpaRepository<UserSchema, Long> {
 
     boolean existsByEmail(String email);
 
+    void deleteByEmail(String email);
+
 }

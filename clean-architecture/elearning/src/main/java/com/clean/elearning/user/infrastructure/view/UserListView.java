@@ -6,6 +6,7 @@ import com.clean.elearning.user.adapter.ui.UserListPresenter;
 import com.clean.elearning.user.adapter.ui.UserViewModel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -45,6 +46,18 @@ public class UserListView extends VerticalLayout {
         getUI()
                 .flatMap(ui -> ui.navigate(EditUserFormView.class, updateUserRequest.getEmail()))
                 .ifPresent(view -> view.setUser(updateUserRequest));
+    }
+
+    public void showDeleteUserConfirmDialog(@NonNull UserViewModel user) {
+        final var confirmDialog = new ConfirmDialog();
+        confirmDialog.setCancelable(true);
+        confirmDialog.setHeader("Delete User");
+        confirmDialog.setText("Are you sure you want to delete this user?");
+        confirmDialog.setCancelText("Cancel");
+        confirmDialog.setConfirmText("Delete");
+        confirmDialog.setConfirmButtonTheme(ButtonVariant.LUMO_PRIMARY.getVariantName() + " " + ButtonVariant.LUMO_ERROR.getVariantName());
+        confirmDialog.addConfirmListener(event -> userListPresenter.handleDeleteUserConfirm(user));
+        confirmDialog.open();
     }
 
     private void configureGrid() {

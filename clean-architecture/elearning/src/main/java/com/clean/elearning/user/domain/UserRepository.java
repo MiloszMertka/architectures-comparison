@@ -13,4 +13,6 @@ public interface UserRepository {
 
     void saveUser(User user);
 
+    void deleteUserByEmail(String email);
+
 }
