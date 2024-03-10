@@ -22,10 +22,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
 
 @Route(value = "users/create", layout = MainLayout.class)
 @PageTitle("Create user")
+@RolesAllowed("ADMIN")
 public class CreateUserFormView extends FormLayout implements CreateUserFormUI {
 
     private final CreateUserFormPresenter createUserFormPresenter;

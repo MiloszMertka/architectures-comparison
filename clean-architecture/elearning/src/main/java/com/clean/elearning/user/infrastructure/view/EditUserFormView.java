@@ -21,10 +21,12 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
 
 @Route(value = "users/edit", layout = MainLayout.class)
 @PageTitle("Edit user")
+@RolesAllowed("ADMIN")
 public class EditUserFormView extends FormLayout implements HasUrlParameter<String>, EditUserFormUI {
 
     private final EditUserFormPresenter editUserFormPresenter;

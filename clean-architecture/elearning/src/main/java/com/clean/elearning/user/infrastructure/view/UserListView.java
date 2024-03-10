@@ -20,12 +20,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
 
 @Route(value = "users", layout = MainLayout.class)
 @PageTitle("Users")
+@RolesAllowed("ADMIN")
 public class UserListView extends VerticalLayout implements UserListUI {
 
     private final UserListPresenter userListPresenter;
