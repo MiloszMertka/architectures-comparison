@@ -1,5 +1,6 @@
 package com.clean.elearning.user.adapter.ui.presenter;
 
+import com.clean.elearning.user.adapter.dto.CreateUserRequest;
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
 import com.clean.elearning.user.adapter.ui.UserListUI;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
@@ -29,6 +30,11 @@ public class UserListPresenter {
                 .map(UserViewModel::fromUser)
                 .toList();
         userListUI.showUsers(userViewModels);
+    }
+
+    public void handleCreateUserButtonClick() {
+        final var createUserRequest = new CreateUserRequest();
+        userListUI.navigateToCreateUserFormView(createUserRequest);
     }
 
     public void handleEditUserButtonClick(@NonNull UserViewModel user) {

@@ -1,16 +1,19 @@
 package com.clean.elearning.user.infrastructure.view;
 
 import com.clean.elearning.shared.view.MainLayout;
+import com.clean.elearning.user.adapter.dto.CreateUserRequest;
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
 import com.clean.elearning.user.adapter.ui.UserListUI;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 import com.clean.elearning.user.adapter.ui.presenter.UserListPresenter;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -30,8 +33,9 @@ public class UserListView extends VerticalLayout implements UserListUI {
         this.userListPresenter = userListPresenter;
         userListPresenter.setUserListUI(this);
         setSizeFull();
+        final var toolbar = createToolbar();
         configureGrid();
-        add(grid);
+        add(toolbar, grid);
     }
 
     @PostConstruct
@@ -42,6 +46,13 @@ public class UserListView extends VerticalLayout implements UserListUI {
     @Override
     public void showUsers(@NonNull List<UserViewModel> users) {
         grid.setItems(users);
+    }
+
+    @Override
+    public void navigateToCreateUserFormView(@NonNull CreateUserRequest createUserRequest) {
+        getUI()
+                .flatMap(ui -> ui.navigate(CreateUserFormView.class))
+                .ifPresent(view -> view.setUser(createUserRequest));
     }
 
     @Override
@@ -64,6 +75,13 @@ public class UserListView extends VerticalLayout implements UserListUI {
         confirmDialog.open();
     }
 
+    private Component createToolbar() {
+        final var createUserButton = new Button("Create User", new Icon(VaadinIcon.PLUS));
+        createUserButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        createUserButton.addClickListener(event -> userListPresenter.handleCreateUserButtonClick());
+        return new HorizontalLayout(createUserButton);
+    }
+
     private void configureGrid() {
         grid.setSizeFull();
         grid.addColumn(UserViewModel::firstName).setHeader("First Name");
@@ -80,7 +98,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
             final var editIcon = new Icon(VaadinIcon.EDIT);
             final var editButton = new Button(editIcon);
             editButton.addThemeVariants(ButtonVariant.LUMO_ICON);
-            editButton.addClickListener(click -> userListPresenter.handleEditUserButtonClick(user));
+            editButton.addClickListener(event -> userListPresenter.handleEditUserButtonClick(user));
             return editButton;
         }).setWidth("30px");
     }
@@ -90,7 +108,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
             final var deleteIcon = new Icon(VaadinIcon.TRASH);
             final var deleteButton = new Button(deleteIcon);
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
-            deleteButton.addClickListener(click -> userListPresenter.handleDeleteUserButtonClick(user));
+            deleteButton.addClickListener(event -> userListPresenter.handleDeleteUserButtonClick(user));
             return deleteButton;
         }).setWidth("30px");
     }
