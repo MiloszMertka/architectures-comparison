@@ -32,6 +32,19 @@ public class UserListPresenter {
         userListUI.showUsers(userViewModels);
     }
 
+    @Transactional(readOnly = true)
+    public void handleSearchFieldChange(String searchText) {
+        if (searchText == null || searchText.isBlank()) {
+            return;
+        }
+
+        final var users = browseUsersUseCase.browseUsers(searchText);
+        final var userViewModels = users.stream()
+                .map(UserViewModel::fromUser)
+                .toList();
+        userListUI.showUsers(userViewModels);
+    }
+
     public void handleCreateUserButtonClick() {
         final var createUserRequest = new CreateUserRequest();
         userListUI.navigateToCreateUserFormView(createUserRequest);

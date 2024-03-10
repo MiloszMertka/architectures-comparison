@@ -30,6 +30,14 @@ class UserGateway implements UserRepository, UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<User> searchUsers(@NonNull String searchText) {
+        return userSchemaRepository.search(searchText).stream()
+                .map(UserSchema::toUser)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<User> getUserByEmail(@NonNull String email) {
         return userSchemaRepository.findByEmail(email)
                 .map(UserSchema::toUser);

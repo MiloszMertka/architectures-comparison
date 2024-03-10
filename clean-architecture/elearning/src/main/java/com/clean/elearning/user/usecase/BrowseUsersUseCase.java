@@ -8,4 +8,6 @@ public interface BrowseUsersUseCase {
 
     List<User> browseUsers();
 
+    List<User> browseUsers(String searchText);
+
 }

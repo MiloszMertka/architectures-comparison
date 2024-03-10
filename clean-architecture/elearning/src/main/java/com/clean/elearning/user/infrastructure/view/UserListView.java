@@ -15,6 +15,8 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
@@ -28,6 +30,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
 
     private final UserListPresenter userListPresenter;
     private final Grid<UserViewModel> grid = new Grid<>(UserViewModel.class);
+    private final TextField searchField = new TextField();
 
     public UserListView(UserListPresenter userListPresenter) {
         this.userListPresenter = userListPresenter;
@@ -76,10 +79,18 @@ public class UserListView extends VerticalLayout implements UserListUI {
     }
 
     private Component createToolbar() {
+        configureSearchField();
         final var createUserButton = new Button("Create User", new Icon(VaadinIcon.PLUS));
         createUserButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         createUserButton.addClickListener(event -> userListPresenter.handleCreateUserButtonClick());
-        return new HorizontalLayout(createUserButton);
+        return new HorizontalLayout(searchField, createUserButton);
+    }
+
+    private void configureSearchField() {
+        searchField.setPlaceholder("Search users");
+        searchField.setClearButtonVisible(true);
+        searchField.setValueChangeMode(ValueChangeMode.LAZY);
+        searchField.addValueChangeListener(event -> userListPresenter.handleSearchFieldChange(event.getValue()));
     }
 
     private void configureGrid() {

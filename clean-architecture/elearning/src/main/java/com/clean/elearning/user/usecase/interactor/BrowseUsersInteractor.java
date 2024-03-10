@@ -19,4 +19,9 @@ public class BrowseUsersInteractor implements BrowseUsersUseCase {
         return userRepository.getAllUsers();
     }
 
+    @Override
+    public List<User> browseUsers(String searchText) {
+        return userRepository.searchUsers(searchText);
+    }
+
 }

@@ -7,6 +7,8 @@ public interface UserRepository {
 
     List<User> getAllUsers();
 
+    List<User> searchUsers(String searchText);
+
     Optional<User> getUserByEmail(String email);
 
     boolean userExistsByEmail(String email);
