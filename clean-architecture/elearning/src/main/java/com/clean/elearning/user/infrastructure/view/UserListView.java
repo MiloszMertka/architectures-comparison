@@ -2,8 +2,9 @@ package com.clean.elearning.user.infrastructure.view;
 
 import com.clean.elearning.shared.view.MainLayout;
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
-import com.clean.elearning.user.adapter.ui.UserListPresenter;
-import com.clean.elearning.user.adapter.ui.UserViewModel;
+import com.clean.elearning.user.adapter.ui.UserListUI;
+import com.clean.elearning.user.adapter.ui.model.UserViewModel;
+import com.clean.elearning.user.adapter.ui.presenter.UserListPresenter;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -20,14 +21,14 @@ import java.util.List;
 
 @Route(value = "users", layout = MainLayout.class)
 @PageTitle("Users")
-public class UserListView extends VerticalLayout {
+public class UserListView extends VerticalLayout implements UserListUI {
 
     private final UserListPresenter userListPresenter;
     private final Grid<UserViewModel> grid = new Grid<>(UserViewModel.class);
 
     public UserListView(UserListPresenter userListPresenter) {
         this.userListPresenter = userListPresenter;
-        userListPresenter.setUserListView(this);
+        userListPresenter.setUserListUI(this);
         setSizeFull();
         configureGrid();
         add(grid);
@@ -38,16 +39,19 @@ public class UserListView extends VerticalLayout {
         userListPresenter.handlePageLoad();
     }
 
+    @Override
     public void showUsers(@NonNull List<UserViewModel> users) {
         grid.setItems(users);
     }
 
+    @Override
     public void navigateToEditUserFormView(@NonNull UpdateUserRequest updateUserRequest) {
         getUI()
                 .flatMap(ui -> ui.navigate(EditUserFormView.class, updateUserRequest.getEmail()))
                 .ifPresent(view -> view.setUser(updateUserRequest));
     }
 
+    @Override
     public void showDeleteUserConfirmDialog(@NonNull UserViewModel user) {
         final var confirmDialog = new ConfirmDialog();
         confirmDialog.setCancelable(true);

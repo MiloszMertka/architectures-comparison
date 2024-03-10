@@ -1,7 +1,7 @@
-package com.clean.elearning.user.adapter.ui;
+package com.clean.elearning.user.adapter.ui.presenter;
 
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
-import com.clean.elearning.user.infrastructure.view.EditUserFormView;
+import com.clean.elearning.user.adapter.ui.EditUserFormUI;
 import com.clean.elearning.user.usecase.UpdateUserUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +17,19 @@ public class EditUserFormPresenter {
     private final UpdateUserUseCase updateUserUseCase;
 
     @Setter
-    private EditUserFormView editUserFormView;
+    private EditUserFormUI editUserFormUI;
 
     @Transactional
     public void handleSaveUserButtonClick(@NonNull String userEmail, @NonNull UpdateUserRequest updateUserRequest) {
-        if (!editUserFormView.isFormValid()) {
+        if (!editUserFormUI.isFormValid()) {
             return;
         }
 
         try {
             updateUserUseCase.updateUser(userEmail, updateUserRequest);
-            editUserFormView.navigateToUserListView();
+            editUserFormUI.navigateToUserListView();
         } catch (Exception exception) {
-            editUserFormView.showErrorMessage(exception.getMessage());
+            editUserFormUI.showErrorMessage(exception.getMessage());
         }
     }
 

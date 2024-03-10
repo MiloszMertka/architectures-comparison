@@ -1,4 +1,4 @@
-package com.clean.elearning.user.adapter.ui;
+package com.clean.elearning.user.adapter.ui.model;
 
 import com.clean.elearning.user.domain.User;
 import org.springframework.lang.NonNull;

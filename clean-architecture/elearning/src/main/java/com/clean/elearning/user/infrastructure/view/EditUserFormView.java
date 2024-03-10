@@ -2,7 +2,8 @@ package com.clean.elearning.user.infrastructure.view;
 
 import com.clean.elearning.shared.view.MainLayout;
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
-import com.clean.elearning.user.adapter.ui.EditUserFormPresenter;
+import com.clean.elearning.user.adapter.ui.EditUserFormUI;
+import com.clean.elearning.user.adapter.ui.presenter.EditUserFormPresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -22,7 +23,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.lang.NonNull;
 
 @Route(value = "users/edit", layout = MainLayout.class)
-public class EditUserFormView extends FormLayout implements HasUrlParameter<String> {
+public class EditUserFormView extends FormLayout implements HasUrlParameter<String>, EditUserFormUI {
 
     private final EditUserFormPresenter editUserFormPresenter;
     private final BeanValidationBinder<UpdateUserRequest> binder = new BeanValidationBinder<>(UpdateUserRequest.class);
@@ -35,7 +36,7 @@ public class EditUserFormView extends FormLayout implements HasUrlParameter<Stri
 
     public EditUserFormView(EditUserFormPresenter editUserFormPresenter) {
         this.editUserFormPresenter = editUserFormPresenter;
-        editUserFormPresenter.setEditUserFormView(this);
+        editUserFormPresenter.setEditUserFormUI(this);
         binder.bindInstanceFields(this);
         final var content = createContent();
         add(content);
@@ -46,18 +47,22 @@ public class EditUserFormView extends FormLayout implements HasUrlParameter<Stri
         this.userEmail = userEmail;
     }
 
+    @Override
     public void setUser(@NonNull UpdateUserRequest user) {
         binder.setBean(user);
     }
 
+    @Override
     public boolean isFormValid() {
         return binder.isValid();
     }
 
+    @Override
     public void navigateToUserListView() {
         getUI().ifPresent(ui -> ui.navigate(UserListView.class));
     }
 
+    @Override
     public void showErrorMessage(@NonNull String message) {
         final var errorNotification = new Notification(message, 3000);
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);

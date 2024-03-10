@@ -1,7 +1,8 @@
-package com.clean.elearning.user.adapter.ui;
+package com.clean.elearning.user.adapter.ui.presenter;
 
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
-import com.clean.elearning.user.infrastructure.view.UserListView;
+import com.clean.elearning.user.adapter.ui.UserListUI;
+import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 import com.clean.elearning.user.usecase.BrowseUsersUseCase;
 import com.clean.elearning.user.usecase.DeleteUserUseCase;
 import lombok.AccessLevel;
@@ -19,7 +20,7 @@ public class UserListPresenter {
     private final DeleteUserUseCase deleteUserUseCase;
 
     @Setter
-    private UserListView userListView;
+    private UserListUI userListUI;
 
     @Transactional(readOnly = true)
     public void handlePageLoad() {
@@ -27,16 +28,16 @@ public class UserListPresenter {
         final var userViewModels = users.stream()
                 .map(UserViewModel::fromUser)
                 .toList();
-        userListView.showUsers(userViewModels);
+        userListUI.showUsers(userViewModels);
     }
 
     public void handleEditUserButtonClick(@NonNull UserViewModel user) {
         final var updateUserRequest = createUpdateUserRequest(user);
-        userListView.navigateToEditUserFormView(updateUserRequest);
+        userListUI.navigateToEditUserFormView(updateUserRequest);
     }
 
     public void handleDeleteUserButtonClick(@NonNull UserViewModel user) {
-        userListView.showDeleteUserConfirmDialog(user);
+        userListUI.showDeleteUserConfirmDialog(user);
     }
 
     @Transactional
