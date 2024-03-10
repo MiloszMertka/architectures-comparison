@@ -1,5 +1,6 @@
 package com.clean.elearning.shared.view;
 
+import com.clean.elearning.course.infrastructure.view.AdminCourseListView;
 import com.clean.elearning.shared.service.SecurityService;
 import com.clean.elearning.user.infrastructure.view.ChangePasswordFormView;
 import com.clean.elearning.user.infrastructure.view.UserListView;
@@ -59,9 +60,10 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        addToDrawer(new VerticalLayout(
-                new RouterLink("Users", UserListView.class)
-        ));
+        final var links = new VerticalLayout();
+        links.add(new RouterLink("Courses", AdminCourseListView.class));
+        links.add(new RouterLink("Users", UserListView.class));
+        addToDrawer(links);
     }
 
 }

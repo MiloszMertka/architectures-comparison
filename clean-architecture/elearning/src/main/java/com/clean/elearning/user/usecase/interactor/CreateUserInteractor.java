@@ -18,12 +18,12 @@ public class CreateUserInteractor implements CreateUserUseCase {
 
     @Override
     public void createUser(CreateUserModel createUserModel) {
-        validateUserDoesNotExists(createUserModel.getEmail());
+        validateUserDoesNotExist(createUserModel.getEmail());
         final var user = createUserFromModel(createUserModel);
         userRepository.saveUser(user);
     }
 
-    private void validateUserDoesNotExists(String email) {
+    private void validateUserDoesNotExist(String email) {
         if (userRepository.userExistsByEmail(email)) {
             throw new IllegalStateException("User with email " + email + " already exists");
         }

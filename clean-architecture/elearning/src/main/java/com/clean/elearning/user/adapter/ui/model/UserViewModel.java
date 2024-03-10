@@ -19,4 +19,8 @@ public record UserViewModel(
         );
     }
 
+    public String fullName() {
+        return firstName + " " + lastName;
+    }
+
 }

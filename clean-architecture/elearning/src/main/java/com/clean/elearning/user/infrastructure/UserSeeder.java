@@ -17,7 +17,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @ConditionalOnProperty(name = "seeder.enabled", havingValue = "true")
-class UserSeeder implements Seeder {
+public class UserSeeder implements Seeder {
 
     private static final int USERS_TO_SEED = 100;
     private static final String USERS_PASSWORD = "ZAQ!2wsx";

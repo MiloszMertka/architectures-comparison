@@ -3,7 +3,9 @@ package com.clean.elearning.user.adapter.database;
 import com.clean.elearning.user.domain.Role;
 import com.clean.elearning.user.domain.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +23,6 @@ public class UserSchema implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(nullable = false)

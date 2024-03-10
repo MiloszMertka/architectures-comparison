@@ -64,6 +64,18 @@ public class User {
         return role;
     }
 
+    public boolean isTeacher() {
+        return role == Role.TEACHER;
+    }
+
+    public boolean isStudent() {
+        return role == Role.STUDENT;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(email);
