@@ -1,6 +1,7 @@
 package com.clean.elearning.shared.view;
 
 import com.clean.elearning.shared.service.SecurityService;
+import com.clean.elearning.user.infrastructure.view.ChangePasswordFormView;
 import com.clean.elearning.user.infrastructure.view.UserListView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -27,9 +28,10 @@ public class MainLayout extends AppLayout {
     private void createHeader() {
         final var drawerToggle = new DrawerToggle();
         final var logo = createLogo();
+        final var changePasswordButton = createChangePasswordButton();
         final var logoutButton = createLogoutButton();
 
-        final var header = new HorizontalLayout(drawerToggle, logo, logoutButton);
+        final var header = new HorizontalLayout(drawerToggle, logo, changePasswordButton, logoutButton);
         header.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         header.expand(logo);
         header.setWidthFull();
@@ -42,6 +44,12 @@ public class MainLayout extends AppLayout {
         final var logo = new H1("Elearning");
         logo.addClassNames(FontSize.LARGE, Margin.MEDIUM);
         return logo;
+    }
+
+    private Component createChangePasswordButton() {
+        final var changePasswordButton = new Button("Change password");
+        changePasswordButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate(ChangePasswordFormView.class)));
+        return changePasswordButton;
     }
 
     private Component createLogoutButton() {

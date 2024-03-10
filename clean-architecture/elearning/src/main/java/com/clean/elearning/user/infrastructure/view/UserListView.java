@@ -1,7 +1,6 @@
 package com.clean.elearning.user.infrastructure.view;
 
 import com.clean.elearning.shared.view.MainLayout;
-import com.clean.elearning.user.adapter.dto.CreateUserRequest;
 import com.clean.elearning.user.adapter.dto.UpdateUserRequest;
 import com.clean.elearning.user.adapter.ui.UserListUI;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
@@ -54,10 +53,8 @@ public class UserListView extends VerticalLayout implements UserListUI {
     }
 
     @Override
-    public void navigateToCreateUserFormView(@NonNull CreateUserRequest createUserRequest) {
-        getUI()
-                .flatMap(ui -> ui.navigate(CreateUserFormView.class))
-                .ifPresent(view -> view.setUser(createUserRequest));
+    public void navigateToCreateUserFormView() {
+        getUI().ifPresent(ui -> ui.navigate(CreateUserFormView.class));
     }
 
     @Override
@@ -71,7 +68,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
     public void showDeleteUserConfirmDialog(@NonNull UserViewModel user) {
         final var confirmDialog = new ConfirmDialog();
         confirmDialog.setCancelable(true);
-        confirmDialog.setHeader("Delete User");
+        confirmDialog.setHeader("Delete user");
         confirmDialog.setText("Are you sure you want to delete this user?");
         confirmDialog.setCancelText("Cancel");
         confirmDialog.setConfirmText("Delete");
@@ -82,7 +79,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
 
     private Component createToolbar() {
         configureSearchField();
-        final var createUserButton = new Button("Create User", new Icon(VaadinIcon.PLUS));
+        final var createUserButton = new Button("Create user", new Icon(VaadinIcon.PLUS));
         createUserButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         createUserButton.addClickListener(event -> userListPresenter.handleCreateUserButtonClick());
         return new HorizontalLayout(searchField, createUserButton);
@@ -97,8 +94,8 @@ public class UserListView extends VerticalLayout implements UserListUI {
 
     private void configureGrid() {
         grid.setSizeFull();
-        grid.addColumn(UserViewModel::firstName).setHeader("First Name");
-        grid.addColumn(UserViewModel::lastName).setHeader("Last Name");
+        grid.addColumn(UserViewModel::firstName).setHeader("First name");
+        grid.addColumn(UserViewModel::lastName).setHeader("Last name");
         grid.addColumn(UserViewModel::email).setHeader("Email");
         grid.addColumn(UserViewModel::role).setHeader("Role");
         grid.getColumns().forEach(column -> column.setAutoWidth(true));

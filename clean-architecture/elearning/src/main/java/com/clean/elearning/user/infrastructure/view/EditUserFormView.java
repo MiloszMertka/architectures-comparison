@@ -27,7 +27,7 @@ import org.springframework.lang.NonNull;
 @Route(value = "users/edit", layout = MainLayout.class)
 @PageTitle("Edit user")
 @RolesAllowed("ADMIN")
-public class EditUserFormView extends FormLayout implements HasUrlParameter<String>, EditUserFormUI {
+public class EditUserFormView extends VerticalLayout implements HasUrlParameter<String>, EditUserFormUI {
 
     private final EditUserFormPresenter editUserFormPresenter;
     private final BeanValidationBinder<UpdateUserRequest> binder = new BeanValidationBinder<>(UpdateUserRequest.class);
@@ -75,12 +75,12 @@ public class EditUserFormView extends FormLayout implements HasUrlParameter<Stri
 
     private Component createContent() {
         final var heading = new H1("Edit user");
-        final var fieldsLayout = crateFieldsLayout();
+        final var fieldsLayout = createFieldsLayout();
         final var buttonsLayout = createButtonsLayout();
         return new VerticalLayout(heading, fieldsLayout, buttonsLayout);
     }
 
-    private Component crateFieldsLayout() {
+    private Component createFieldsLayout() {
         return new FormLayout(firstName, lastName, email);
     }
 

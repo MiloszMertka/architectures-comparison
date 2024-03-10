@@ -28,7 +28,7 @@ import org.springframework.lang.NonNull;
 @Route(value = "users/create", layout = MainLayout.class)
 @PageTitle("Create user")
 @RolesAllowed("ADMIN")
-public class CreateUserFormView extends FormLayout implements CreateUserFormUI {
+public class CreateUserFormView extends VerticalLayout implements CreateUserFormUI {
 
     private final CreateUserFormPresenter createUserFormPresenter;
     private final BeanValidationBinder<CreateUserRequest> binder = new BeanValidationBinder<>(CreateUserRequest.class);
@@ -44,13 +44,9 @@ public class CreateUserFormView extends FormLayout implements CreateUserFormUI {
         this.createUserFormPresenter = createUserFormPresenter;
         createUserFormPresenter.setCreateUserFormUI(this);
         binder.bindInstanceFields(this);
+        binder.setBean(new CreateUserRequest());
         final var content = createContent();
         add(content);
-    }
-
-    @Override
-    public void setUser(@NonNull CreateUserRequest user) {
-        binder.setBean(user);
     }
 
     @Override
@@ -72,12 +68,12 @@ public class CreateUserFormView extends FormLayout implements CreateUserFormUI {
 
     private Component createContent() {
         final var heading = new H1("Create user");
-        final var fieldsLayout = crateFieldsLayout();
+        final var fieldsLayout = createFieldsLayout();
         final var buttonsLayout = createButtonsLayout();
         return new VerticalLayout(heading, fieldsLayout, buttonsLayout);
     }
 
-    private Component crateFieldsLayout() {
+    private Component createFieldsLayout() {
         configureRoleComboBox();
         return new FormLayout(firstName, lastName, email, password, role);
     }

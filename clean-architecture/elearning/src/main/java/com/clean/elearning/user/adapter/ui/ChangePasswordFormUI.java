@@ -1,10 +1,10 @@
 package com.clean.elearning.user.adapter.ui;
 
-public interface CreateUserFormUI {
+public interface ChangePasswordFormUI {
 
     boolean isFormValid();
 
-    void navigateToUserListView();
+    void navigateToHomeView();
 
     void showErrorMessage(String message);
 
