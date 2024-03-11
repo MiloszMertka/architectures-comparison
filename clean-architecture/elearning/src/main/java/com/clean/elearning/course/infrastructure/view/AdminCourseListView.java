@@ -18,6 +18,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteParam;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
@@ -77,6 +78,12 @@ public class AdminCourseListView extends VerticalLayout implements AdminCourseLi
         confirmDialog.open();
     }
 
+    @Override
+    public void navigateToCourseStudentsListView(@NonNull String courseName) {
+        final var courseNameRouteParam = new RouteParam("courseName", courseName);
+        getUI().ifPresent(ui -> ui.navigate(CourseStudentsListView.class, courseNameRouteParam));
+    }
+
     private Component createToolbar() {
         configureSearchField();
         final var createCourseButton = new Button("Create course", new Icon(VaadinIcon.PLUS));
@@ -94,11 +101,22 @@ public class AdminCourseListView extends VerticalLayout implements AdminCourseLi
 
     private void configureGrid() {
         grid.setSizeFull();
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
         grid.addColumn(CourseViewModel::name).setHeader("Name");
         grid.addColumn(CourseViewModel::teacherName).setHeader("Teacher");
-        grid.getColumns().forEach(column -> column.setAutoWidth(true));
+        grid.getColumns().forEach(column -> column.setSortable(true));
+        createCourseStudentsButtonColumn();
         createEditButtonColumn();
         createDeleteButtonColumn();
+        grid.getColumns().forEach(column -> column.setAutoWidth(true));
+    }
+
+    private void createCourseStudentsButtonColumn() {
+        grid.addComponentColumn(course -> {
+            final var courseStudentsButton = new Button("Students");
+            courseStudentsButton.addClickListener(event -> adminCourseListPresenter.handleCourseStudentsButtonClick(course));
+            return courseStudentsButton;
+        });
     }
 
     private void createEditButtonColumn() {
@@ -108,7 +126,7 @@ public class AdminCourseListView extends VerticalLayout implements AdminCourseLi
             editButton.addThemeVariants(ButtonVariant.LUMO_ICON);
             editButton.addClickListener(event -> adminCourseListPresenter.handleEditCourseButtonClick(course));
             return editButton;
-        }).setWidth("30px");
+        });
     }
 
     private void createDeleteButtonColumn() {
@@ -118,7 +136,7 @@ public class AdminCourseListView extends VerticalLayout implements AdminCourseLi
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
             deleteButton.addClickListener(event -> adminCourseListPresenter.handleDeleteCourseButtonClick(course));
             return deleteButton;
-        }).setWidth("30px");
+        });
     }
 
 }

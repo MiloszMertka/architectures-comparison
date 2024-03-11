@@ -26,7 +26,7 @@ public class CourseSchema {
     @ManyToOne(optional = false)
     private UserSchema teacher;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     private Set<UserSchema> students;
 
     public static CourseSchema fromCourse(@NonNull Course course) {

@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class CreateUserFormPresenter {
     private CreateUserFormUI createUserFormUI;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void handleSaveUserButtonClick(@NonNull CreateUserRequest createUserRequest) {
         if (!createUserFormUI.isFormValid()) {
             return;

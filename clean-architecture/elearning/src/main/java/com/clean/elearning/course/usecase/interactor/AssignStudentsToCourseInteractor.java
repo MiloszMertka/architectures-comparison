@@ -23,6 +23,7 @@ public class AssignStudentsToCourseInteractor implements AssignStudentsToCourseU
         assignStudentsToCourseModel.getStudentEmails().stream()
                 .map(this::getUserByEmail)
                 .forEach(course::assignStudent);
+        courseRepository.saveCourse(course);
     }
 
     private Course getCourseByName(String name) {

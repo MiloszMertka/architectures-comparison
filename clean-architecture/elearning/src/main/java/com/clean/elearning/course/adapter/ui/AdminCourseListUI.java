@@ -15,4 +15,6 @@ public interface AdminCourseListUI {
 
     void showDeleteCourseConfirmDialog(CourseViewModel course);
 
+    void navigateToCourseStudentsListView(String courseName);
+
 }

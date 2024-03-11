@@ -94,13 +94,15 @@ public class UserListView extends VerticalLayout implements UserListUI {
 
     private void configureGrid() {
         grid.setSizeFull();
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
         grid.addColumn(UserViewModel::firstName).setHeader("First name");
         grid.addColumn(UserViewModel::lastName).setHeader("Last name");
         grid.addColumn(UserViewModel::email).setHeader("Email");
         grid.addColumn(UserViewModel::role).setHeader("Role");
-        grid.getColumns().forEach(column -> column.setAutoWidth(true));
+        grid.getColumns().forEach(column -> column.setSortable(true));
         createEditButtonColumn();
         createDeleteButtonColumn();
+        grid.getColumns().forEach(column -> column.setAutoWidth(true));
     }
 
     private void createEditButtonColumn() {
@@ -110,7 +112,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
             editButton.addThemeVariants(ButtonVariant.LUMO_ICON);
             editButton.addClickListener(event -> userListPresenter.handleEditUserButtonClick(user));
             return editButton;
-        }).setWidth("30px");
+        });
     }
 
     private void createDeleteButtonColumn() {
@@ -120,7 +122,7 @@ public class UserListView extends VerticalLayout implements UserListUI {
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
             deleteButton.addClickListener(event -> userListPresenter.handleDeleteUserButtonClick(user));
             return deleteButton;
-        }).setWidth("30px");
+        });
     }
 
 }

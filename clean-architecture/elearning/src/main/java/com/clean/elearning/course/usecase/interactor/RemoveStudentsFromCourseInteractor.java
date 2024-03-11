@@ -23,6 +23,7 @@ public class RemoveStudentsFromCourseInteractor implements RemoveStudentsFromCou
         removeStudentsFromCourseModel.getStudentEmails().stream()
                 .map(this::getUserByEmail)
                 .forEach(course::removeStudent);
+        courseRepository.saveCourse(course);
     }
 
     private Course getCourseByName(String name) {

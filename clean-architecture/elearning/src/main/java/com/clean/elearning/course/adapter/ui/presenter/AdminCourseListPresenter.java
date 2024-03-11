@@ -63,6 +63,10 @@ public class AdminCourseListPresenter {
         handlePageLoad();
     }
 
+    public void handleCourseStudentsButtonClick(@NonNull CourseViewModel course) {
+        adminCourseListUI.navigateToCourseStudentsListView(course.name());
+    }
+
     private UpdateCourseRequest createUpdateCourseRequest(CourseViewModel course) {
         final var updateCourseRequest = new UpdateCourseRequest();
         updateCourseRequest.setName(course.name());
