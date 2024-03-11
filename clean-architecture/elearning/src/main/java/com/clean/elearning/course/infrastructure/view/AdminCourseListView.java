@@ -81,7 +81,7 @@ public class AdminCourseListView extends VerticalLayout implements AdminCourseLi
     @Override
     public void navigateToCourseStudentsListView(@NonNull String courseName) {
         final var courseNameRouteParam = new RouteParam("courseName", courseName);
-        getUI().ifPresent(ui -> ui.navigate(CourseStudentsListView.class, courseNameRouteParam));
+        getUI().ifPresent(ui -> ui.navigate(AdminCourseStudentsListView.class, courseNameRouteParam));
     }
 
     private Component createToolbar() {

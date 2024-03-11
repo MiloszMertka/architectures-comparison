@@ -5,7 +5,7 @@ import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 
 import java.util.List;
 
-public interface CourseStudentsListUI {
+public interface AdminCourseStudentsListUI {
 
     void showCourseStudents(List<UserViewModel> students);
 

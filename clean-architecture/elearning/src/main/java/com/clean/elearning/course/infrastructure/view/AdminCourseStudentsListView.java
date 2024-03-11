@@ -2,8 +2,8 @@ package com.clean.elearning.course.infrastructure.view;
 
 import com.clean.elearning.course.adapter.dto.AssignStudentsToCourseRequest;
 import com.clean.elearning.course.adapter.dto.RemoveStudentsFromCourseRequest;
-import com.clean.elearning.course.adapter.ui.CourseStudentsListUI;
-import com.clean.elearning.course.adapter.ui.presenter.CourseStudentsListPresenter;
+import com.clean.elearning.course.adapter.ui.AdminCourseStudentsListUI;
+import com.clean.elearning.course.adapter.ui.presenter.AdminCourseStudentsListPresenter;
 import com.clean.elearning.shared.view.MainLayout;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 import com.vaadin.flow.component.Component;
@@ -30,16 +30,16 @@ import java.util.List;
 @Route(value = "course/:courseName/students", layout = MainLayout.class)
 @PageTitle("Course students")
 @PermitAll
-public class CourseStudentsListView extends VerticalLayout implements BeforeEnterObserver, CourseStudentsListUI {
+public class AdminCourseStudentsListView extends VerticalLayout implements BeforeEnterObserver, AdminCourseStudentsListUI {
 
-    private final CourseStudentsListPresenter courseStudentsListPresenter;
+    private final AdminCourseStudentsListPresenter adminCourseStudentsListPresenter;
     private final Grid<UserViewModel> grid = new Grid<>(UserViewModel.class);
     private final MultiSelectComboBox<UserViewModel> studentsToAssign = new MultiSelectComboBox<>();
     private String courseName;
 
-    public CourseStudentsListView(CourseStudentsListPresenter courseStudentsListPresenter) {
-        this.courseStudentsListPresenter = courseStudentsListPresenter;
-        courseStudentsListPresenter.setCourseStudentsListUI(this);
+    public AdminCourseStudentsListView(AdminCourseStudentsListPresenter adminCourseStudentsListPresenter) {
+        this.adminCourseStudentsListPresenter = adminCourseStudentsListPresenter;
+        adminCourseStudentsListPresenter.setAdminCourseStudentsListUI(this);
         setSizeFull();
         final var toolbar = createToolbar();
         configureGrid();
@@ -65,7 +65,7 @@ public class CourseStudentsListView extends VerticalLayout implements BeforeEnte
         confirmDialog.setCancelText("Cancel");
         confirmDialog.setConfirmText("Delete");
         confirmDialog.setConfirmButtonTheme(ButtonVariant.LUMO_PRIMARY.getVariantName() + " " + ButtonVariant.LUMO_ERROR.getVariantName());
-        confirmDialog.addConfirmListener(event -> courseStudentsListPresenter.handleRemoveStudentsFromCourseConfirm(courseName, removeStudentsFromCourseRequest));
+        confirmDialog.addConfirmListener(event -> adminCourseStudentsListPresenter.handleRemoveStudentsFromCourseConfirm(courseName, removeStudentsFromCourseRequest));
         confirmDialog.open();
     }
 
@@ -79,7 +79,7 @@ public class CourseStudentsListView extends VerticalLayout implements BeforeEnte
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         courseName = beforeEnterEvent.getRouteParameters().get("courseName").orElseThrow();
-        courseStudentsListPresenter.handlePageLoad(courseName);
+        adminCourseStudentsListPresenter.handlePageLoad(courseName);
     }
 
     private Component createToolbar() {
@@ -101,7 +101,7 @@ public class CourseStudentsListView extends VerticalLayout implements BeforeEnte
             final var selectedStudents = studentsToAssign.getValue();
             final var assignStudentsToCourseRequest = new AssignStudentsToCourseRequest();
             assignStudentsToCourseRequest.setStudents(selectedStudents);
-            courseStudentsListPresenter.handleAssignStudentsButtonClick(courseName, assignStudentsToCourseRequest);
+            adminCourseStudentsListPresenter.handleAssignStudentsButtonClick(courseName, assignStudentsToCourseRequest);
         });
         return assignStudentsButton;
     }
@@ -113,7 +113,7 @@ public class CourseStudentsListView extends VerticalLayout implements BeforeEnte
             final var selectedStudents = grid.getSelectedItems();
             final var removeStudentsFromCourseRequest = new RemoveStudentsFromCourseRequest();
             removeStudentsFromCourseRequest.setStudents(selectedStudents);
-            courseStudentsListPresenter.handleRemoveStudentsButtonClick(courseName, removeStudentsFromCourseRequest);
+            adminCourseStudentsListPresenter.handleRemoveStudentsButtonClick(courseName, removeStudentsFromCourseRequest);
         });
         return removeStudentsButton;
     }

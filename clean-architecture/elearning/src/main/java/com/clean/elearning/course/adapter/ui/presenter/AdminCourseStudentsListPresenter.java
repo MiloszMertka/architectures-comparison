@@ -2,7 +2,7 @@ package com.clean.elearning.course.adapter.ui.presenter;
 
 import com.clean.elearning.course.adapter.dto.AssignStudentsToCourseRequest;
 import com.clean.elearning.course.adapter.dto.RemoveStudentsFromCourseRequest;
-import com.clean.elearning.course.adapter.ui.CourseStudentsListUI;
+import com.clean.elearning.course.adapter.ui.AdminCourseStudentsListUI;
 import com.clean.elearning.course.usecase.AssignStudentsToCourseUseCase;
 import com.clean.elearning.course.usecase.RemoveStudentsFromCourseUseCase;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class CourseStudentsListPresenter {
+public class AdminCourseStudentsListPresenter {
 
     private final AssignStudentsToCourseUseCase assignStudentsToCourseUseCase;
     private final RemoveStudentsFromCourseUseCase removeStudentsFromCourseUseCase;
@@ -27,7 +27,7 @@ public class CourseStudentsListPresenter {
     private final ViewCourseUseCase viewCourseUseCase;
 
     @Setter
-    private CourseStudentsListUI courseStudentsListUI;
+    private AdminCourseStudentsListUI adminCourseStudentsListUI;
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
@@ -41,8 +41,8 @@ public class CourseStudentsListPresenter {
                 .filter(user -> !course.getStudents().contains(user))
                 .map(UserViewModel::fromUser)
                 .toList();
-        courseStudentsListUI.showCourseStudents(courseStudents);
-        courseStudentsListUI.setStudentsAvailableToAssign(studentsAvailableToAssign);
+        adminCourseStudentsListUI.showCourseStudents(courseStudents);
+        adminCourseStudentsListUI.setStudentsAvailableToAssign(studentsAvailableToAssign);
     }
 
     @Transactional
@@ -52,12 +52,12 @@ public class CourseStudentsListPresenter {
             assignStudentsToCourseUseCase.assignStudentsToCourse(courseName, assignStudentsToCourseRequest);
             handlePageLoad(courseName);
         } catch (Exception exception) {
-            courseStudentsListUI.showErrorMessage(exception.getMessage());
+            adminCourseStudentsListUI.showErrorMessage(exception.getMessage());
         }
     }
 
     public void handleRemoveStudentsButtonClick(@NonNull String courseName, @NonNull RemoveStudentsFromCourseRequest removeStudentsFromCourseRequest) {
-        courseStudentsListUI.showRemoveStudentsFromCourseConfirmDialog(courseName, removeStudentsFromCourseRequest);
+        adminCourseStudentsListUI.showRemoveStudentsFromCourseConfirmDialog(courseName, removeStudentsFromCourseRequest);
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class CourseStudentsListPresenter {
             removeStudentsFromCourseUseCase.removeStudentsFromCourse(courseName, removeStudentsFromCourseRequest);
             handlePageLoad(courseName);
         } catch (Exception exception) {
-            courseStudentsListUI.showErrorMessage(exception.getMessage());
+            adminCourseStudentsListUI.showErrorMessage(exception.getMessage());
         }
     }
 
