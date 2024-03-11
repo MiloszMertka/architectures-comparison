@@ -22,14 +22,14 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
 
-@Route(value = "course/:courseName/students", layout = MainLayout.class)
+@Route(value = "courses/:courseName/students", layout = MainLayout.class)
 @PageTitle("Course students")
-@PermitAll
+@RolesAllowed("ADMIN")
 public class AdminCourseStudentsListView extends VerticalLayout implements BeforeEnterObserver, AdminCourseStudentsListUI {
 
     private final AdminCourseStudentsListPresenter adminCourseStudentsListPresenter;
