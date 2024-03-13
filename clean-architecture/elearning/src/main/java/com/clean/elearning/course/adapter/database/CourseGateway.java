@@ -2,6 +2,8 @@ package com.clean.elearning.course.adapter.database;
 
 import com.clean.elearning.course.domain.Course;
 import com.clean.elearning.course.domain.CourseRepository;
+import com.clean.elearning.user.adapter.database.UserSchema;
+import com.clean.elearning.user.domain.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -29,6 +31,14 @@ class CourseGateway implements CourseRepository {
     @Transactional(readOnly = true)
     public List<Course> searchCourses(@NonNull String searchText) {
         return courseSchemaRepository.search(searchText).stream()
+                .map(CourseSchema::toCourse)
+                .toList();
+    }
+
+    @Override
+    public List<Course> getUserCourses(@NonNull User user) {
+        final var userSchema = UserSchema.fromUser(user);
+        return courseSchemaRepository.findAllByUser(userSchema).stream()
                 .map(CourseSchema::toCourse)
                 .toList();
     }

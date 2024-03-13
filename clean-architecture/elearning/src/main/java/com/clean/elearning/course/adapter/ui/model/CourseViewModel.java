@@ -8,7 +8,8 @@ import java.util.List;
 public record CourseViewModel(
         String name,
         UserViewModel teacher,
-        List<UserViewModel> students
+        List<UserViewModel> students,
+        List<CourseMaterialViewModel> courseMaterials
 ) {
 
     public static CourseViewModel fromCourse(Course course) {
@@ -16,10 +17,14 @@ public record CourseViewModel(
         final var students = course.getStudents().stream()
                 .map(UserViewModel::fromUser)
                 .toList();
+        final var courseMaterials = course.getCourseMaterials().stream()
+                .map(CourseMaterialViewModel::fromCourseMaterial)
+                .toList();
         return new CourseViewModel(
                 course.getName(),
                 teacher,
-                students
+                students,
+                courseMaterials
         );
     }
 

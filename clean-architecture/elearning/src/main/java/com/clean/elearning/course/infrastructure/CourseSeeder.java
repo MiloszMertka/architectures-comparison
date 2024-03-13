@@ -1,6 +1,7 @@
 package com.clean.elearning.course.infrastructure;
 
 import com.clean.elearning.course.domain.Course;
+import com.clean.elearning.course.domain.CourseMaterial;
 import com.clean.elearning.course.domain.CourseRepository;
 import com.clean.elearning.shared.seeder.Seeder;
 import com.clean.elearning.user.domain.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,6 +56,8 @@ public class CourseSeeder implements Seeder {
         final var studentsCount = faker.random().nextInt(1, 10);
         final var randomStudents = getRandomStudents(studentsCount);
         randomStudents.forEach(course::assignStudent);
+        final var courseMaterials = createRandomCourseMaterials();
+        courseMaterials.forEach(course::addCourseMaterial);
         return course;
     }
 
@@ -72,12 +76,27 @@ public class CourseSeeder implements Seeder {
                 .toList();
 
         while (randomStudents.size() < studentsCount) {
-            final var randomIndex = faker.random().nextInt(0, students.size());
+            final var randomIndex = faker.random().nextInt(0, students.size() - 1);
             final var randomStudent = students.get(randomIndex);
             randomStudents.add(randomStudent);
         }
 
         return randomStudents;
+    }
+
+    private Set<CourseMaterial> createRandomCourseMaterials() {
+        final Set<CourseMaterial> courseMaterials = new HashSet<>();
+        final var courseMaterialsCount = faker.random().nextInt(1, 5);
+
+        while (courseMaterials.size() < courseMaterialsCount) {
+            final var courseMaterial = new CourseMaterial(
+                    faker.lorem().word(),
+                    new File(faker.file().fileName())
+            );
+            courseMaterials.add(courseMaterial);
+        }
+
+        return courseMaterials;
     }
 
 }

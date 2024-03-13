@@ -3,9 +3,11 @@ package com.clean.elearning.course.infrastructure;
 import com.clean.elearning.course.domain.CourseRepository;
 import com.clean.elearning.course.usecase.*;
 import com.clean.elearning.course.usecase.interactor.*;
+import com.clean.elearning.course.usecase.port.FileRepository;
 import com.clean.elearning.user.domain.UserRepository;
 import com.clean.elearning.user.usecase.ViewCourseUseCase;
 import com.clean.elearning.user.usecase.interactor.ViewCourseInteractor;
+import com.clean.elearning.user.usecase.port.AuthContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,11 @@ class CourseConfig {
     @Bean
     public BrowseCoursesUseCase browseCoursesUseCase(CourseRepository courseRepository) {
         return new BrowseCoursesInteractor(courseRepository);
+    }
+
+    @Bean
+    public BrowseUserCoursesUseCase browseUserCoursesUseCase(CourseRepository courseRepository, AuthContext authContext) {
+        return new BrowseUserCoursesInteractor(courseRepository, authContext);
     }
 
     @Bean
@@ -48,6 +55,11 @@ class CourseConfig {
     @Bean
     public RemoveStudentsFromCourseUseCase removeStudentsFromCourseUseCase(CourseRepository courseRepository, UserRepository userRepository) {
         return new RemoveStudentsFromCourseInteractor(courseRepository, userRepository);
+    }
+
+    @Bean
+    public AttachCourseMaterialUseCase attachCourseMaterialUseCase(CourseRepository courseRepository, FileRepository fileRepository, AuthContext authContext) {
+        return new AttachCourseMaterialInteractor(courseRepository, fileRepository, authContext);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.clean.elearning.shared.view;
 
 import com.clean.elearning.course.infrastructure.view.AdminCourseListView;
+import com.clean.elearning.course.infrastructure.view.CourseListView;
 import com.clean.elearning.shared.service.SecurityService;
+import com.clean.elearning.user.domain.Role;
 import com.clean.elearning.user.infrastructure.view.ChangePasswordFormView;
 import com.clean.elearning.user.infrastructure.view.UserListView;
 import com.vaadin.flow.component.Component;
@@ -60,10 +62,25 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        final var links = new VerticalLayout();
-        links.add(new RouterLink("Courses", AdminCourseListView.class));
-        links.add(new RouterLink("Users", UserListView.class));
+        final var links = createLinks();
         addToDrawer(links);
+    }
+
+    private Component createLinks() {
+        final var links = new VerticalLayout();
+
+        if (securityService.getCurrentUser().getRole().equals(Role.ADMIN)) {
+            links.add(
+                    new RouterLink("Courses", AdminCourseListView.class),
+                    new RouterLink("Users", UserListView.class)
+            );
+        } else {
+            links.add(
+                    new RouterLink("My courses", CourseListView.class)
+            );
+        }
+
+        return links;
     }
 
 }

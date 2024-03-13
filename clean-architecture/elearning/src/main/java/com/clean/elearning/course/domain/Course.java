@@ -10,6 +10,7 @@ public class Course {
 
     private final Long id;
     private final Set<User> students = new HashSet<>();
+    private final Set<CourseMaterial> courseMaterials = new HashSet<>();
     private String name;
     private User teacher;
 
@@ -56,6 +57,18 @@ public class Course {
     public void removeStudent(User student) {
         validateUserIsStudent(student);
         students.remove(student);
+    }
+
+    public Set<CourseMaterial> getCourseMaterials() {
+        return courseMaterials;
+    }
+
+    public void addCourseMaterial(CourseMaterial courseMaterial) {
+        courseMaterials.add(courseMaterial);
+    }
+
+    public void removeCourseMaterial(CourseMaterial courseMaterial) {
+        courseMaterials.remove(courseMaterial);
     }
 
     @Override

@@ -29,12 +29,18 @@ public class CourseSchema {
     @ManyToMany
     private Set<UserSchema> students;
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<CourseMaterialSchema> courseMaterials;
+
     public static CourseSchema fromCourse(@NonNull Course course) {
         final var teacher = UserSchema.fromUser(course.getTeacher());
         final var students = course.getStudents().stream()
                 .map(UserSchema::fromUser)
                 .collect(Collectors.toSet());
-        return new CourseSchema(course.getId(), course.getName(), teacher, students);
+        final var courseMaterials = course.getCourseMaterials().stream()
+                .map(CourseMaterialSchema::fromCourseMaterial)
+                .collect(Collectors.toSet());
+        return new CourseSchema(course.getId(), course.getName(), teacher, students, courseMaterials);
     }
 
     public Course toCourse() {
@@ -42,8 +48,12 @@ public class CourseSchema {
         final var domainStudents = students.stream()
                 .map(UserSchema::toUser)
                 .collect(Collectors.toSet());
+        final var domainCourseMaterials = courseMaterials.stream()
+                .map(CourseMaterialSchema::toCourseMaterial)
+                .collect(Collectors.toSet());
         final var course = new Course(id, name, domainTeacher);
         domainStudents.forEach(course::assignStudent);
+        domainCourseMaterials.forEach(course::addCourseMaterial);
         return course;
     }
 
