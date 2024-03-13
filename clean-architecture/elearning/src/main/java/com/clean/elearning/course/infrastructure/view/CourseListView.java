@@ -11,19 +11,23 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.DetailsVariant;
-import com.vaadin.flow.component.html.ListItem;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.lang.NonNull;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 @Route(value = "my-courses", layout = MainLayout.class)
@@ -69,14 +73,30 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     private Component createCourseMaterialsList(List<CourseMaterialViewModel> courseMaterialViewModels) {
-        final var header = new Span("Course materials");
-        final var courseMaterialsListItems = courseMaterialViewModels.stream()
-                .map(courseMaterialViewModel -> new ListItem(courseMaterialViewModel.name()))
-                .toArray(ListItem[]::new);
-        final var courseMaterialsList = new UnorderedList(courseMaterialsListItems);
-        final var container = new VerticalLayout(header, courseMaterialsList);
+        final var header = new Span("Course materials:");
+        final var courseMaterialsAnchors = courseMaterialViewModels.stream()
+                .map(this::createDownloadLink)
+                .toList();
+        final var container = new VerticalLayout(header);
+        container.add(courseMaterialsAnchors);
         container.setPadding(false);
         return container;
+    }
+
+    private Component createDownloadLink(CourseMaterialViewModel courseMaterialViewModel) {
+        final var file = courseMaterialViewModel.file();
+        final var streamResource = new StreamResource(file.getName(), () -> createStreamFromFile(file));
+        final var downloadLink = new Anchor(streamResource, courseMaterialViewModel.name());
+        downloadLink.getElement().setAttribute("download", true);
+        return downloadLink;
+    }
+
+    private InputStream createStreamFromFile(File file) {
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException exception) {
+            throw new IllegalStateException(exception);
+        }
     }
 
     private void addAttachCourseMaterialButtonForTeacher(HasComponents courseDetails, String courseName) {
