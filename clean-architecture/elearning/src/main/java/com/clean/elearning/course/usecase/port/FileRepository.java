@@ -8,4 +8,6 @@ public interface FileRepository {
 
     File saveFile(String name, byte[] content);
 
+    void removeFile(File file);
+
 }

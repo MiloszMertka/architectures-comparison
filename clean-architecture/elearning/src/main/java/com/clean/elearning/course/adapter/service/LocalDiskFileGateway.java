@@ -47,4 +47,12 @@ class LocalDiskFileGateway implements FileRepository {
         return file;
     }
 
+    @Override
+    public void removeFile(@NonNull File file) {
+        final boolean success = file.delete();
+        if (!success) {
+            throw new IllegalStateException("Failed to remove file");
+        }
+    }
+
 }

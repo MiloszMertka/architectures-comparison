@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class AdminCourseListPresenter {
     private AdminCourseListUI adminCourseListUI;
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public void handlePageLoad() {
         final var courses = browseCoursesUseCase.browseCourses();
         final var courseViewModels = courses.stream()
@@ -32,6 +34,7 @@ public class AdminCourseListPresenter {
     }
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public void handleSearchFieldChange(String searchText) {
         if (searchText == null || searchText.isBlank()) {
             return;
@@ -58,6 +61,7 @@ public class AdminCourseListPresenter {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void handleDeleteCourseConfirm(@NonNull CourseViewModel course) {
         deleteCourseUseCase.deleteCourse(course.name());
         handlePageLoad();

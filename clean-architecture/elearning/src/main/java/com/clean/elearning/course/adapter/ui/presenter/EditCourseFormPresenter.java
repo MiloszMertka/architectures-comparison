@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class EditCourseFormPresenter {
     private EditCourseFormUI editCourseFormUI;
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public void handlePageLoad() {
         final var teachers = browseUsersUseCase.browseUsers().stream()
                 .filter(User::isTeacher)
@@ -33,6 +35,7 @@ public class EditCourseFormPresenter {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void handleSaveCourseButtonClick(@NonNull String courseName, @NonNull UpdateCourseRequest updateCourseRequest) {
         if (!editCourseFormUI.isFormValid()) {
             return;

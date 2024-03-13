@@ -1,5 +1,6 @@
 package com.clean.elearning.course.infrastructure.view;
 
+import com.clean.elearning.course.adapter.dto.RemoveCourseMaterialRequest;
 import com.clean.elearning.course.adapter.ui.CourseListUI;
 import com.clean.elearning.course.adapter.ui.model.CourseMaterialViewModel;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
@@ -10,11 +11,16 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -55,10 +61,11 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
 
     @Override
     public void showCourses(@NonNull List<CourseViewModel> courses) {
+        accordion.getElement().removeAllChildren();
         courses.forEach(course -> {
             final var courseName = course.name();
             final var teacher = new Span("Teacher: " + course.teacherName());
-            final var courseMaterialsList = createCourseMaterialsList(course.courseMaterials());
+            final var courseMaterialsList = createCourseMaterialsList(courseName, course.courseMaterials());
             final var courseDetails = new VerticalLayout(teacher, courseMaterialsList);
             addAttachCourseMaterialButtonForTeacher(courseDetails, courseName);
             final var coursePanel = accordion.add(courseName, courseDetails);
@@ -72,23 +79,43 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         getUI().ifPresent(ui -> ui.navigate(AttachCourseMaterialFormView.class, courseNameRouteParam));
     }
 
-    private Component createCourseMaterialsList(List<CourseMaterialViewModel> courseMaterialViewModels) {
+    @Override
+    public void showRemoveCourseMaterialConfirmDialog(@NonNull String courseName, @NonNull RemoveCourseMaterialRequest removeCourseMaterialRequest) {
+        final var confirmDialog = new ConfirmDialog();
+        confirmDialog.setCancelable(true);
+        confirmDialog.setHeader("Remove course material");
+        confirmDialog.setText("Are you sure you want to remove this course material?");
+        confirmDialog.setCancelText("Cancel");
+        confirmDialog.setConfirmText("Remove");
+        confirmDialog.setConfirmButtonTheme(ButtonVariant.LUMO_PRIMARY.getVariantName() + " " + ButtonVariant.LUMO_ERROR.getVariantName());
+        confirmDialog.addConfirmListener(event -> courseListPresenter.handleRemoveCourseMaterialConfirm(courseName, removeCourseMaterialRequest));
+        confirmDialog.open();
+    }
+
+    @Override
+    public void showErrorMessage(@NonNull String message) {
+        final var errorNotification = new Notification(message, 3000);
+        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        errorNotification.open();
+    }
+
+    private Component createCourseMaterialsList(String courseName, List<CourseMaterialViewModel> courseMaterialViewModels) {
         final var header = new Span("Course materials:");
-        final var courseMaterialsAnchors = courseMaterialViewModels.stream()
-                .map(this::createDownloadLink)
+        final var courseMaterials = courseMaterialViewModels.stream()
+                .map(courseMaterialViewModel -> createDownloadLink(courseName, courseMaterialViewModel))
                 .toList();
         final var container = new VerticalLayout(header);
-        container.add(courseMaterialsAnchors);
+        container.add(courseMaterials);
         container.setPadding(false);
         return container;
     }
 
-    private Component createDownloadLink(CourseMaterialViewModel courseMaterialViewModel) {
+    private Component createDownloadLink(String courseName, CourseMaterialViewModel courseMaterialViewModel) {
         final var file = courseMaterialViewModel.file();
         final var streamResource = new StreamResource(file.getName(), () -> createStreamFromFile(file));
         final var downloadLink = new Anchor(streamResource, courseMaterialViewModel.name());
         downloadLink.getElement().setAttribute("download", true);
-        return downloadLink;
+        return addCreteRemoveCourseMaterialButtonForTeacher(downloadLink, courseName, courseMaterialViewModel.name(), file);
     }
 
     private InputStream createStreamFromFile(File file) {
@@ -97,6 +124,27 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         } catch (FileNotFoundException exception) {
             throw new IllegalStateException(exception);
         }
+    }
+
+    private Component addCreteRemoveCourseMaterialButtonForTeacher(Component downloadLink, String courseName, String courseMaterialName, File file) {
+        if (!securityService.getCurrentUser().isTeacher()) {
+            return downloadLink;
+        }
+
+        final var removeCourseMaterialButton = createRemoveCourseMaterialButton(courseName, courseMaterialName, file);
+        final var container = new HorizontalLayout(downloadLink, removeCourseMaterialButton);
+        container.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        return container;
+    }
+
+    private Component createRemoveCourseMaterialButton(String courseName, String courseMaterialName, File file) {
+        final var removeCourseMaterialButton = new Button(new Icon(VaadinIcon.TRASH));
+        removeCourseMaterialButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
+        final var removeCourseMaterialRequest = new RemoveCourseMaterialRequest();
+        removeCourseMaterialRequest.setCourseMaterialName(courseMaterialName);
+        removeCourseMaterialRequest.setCourseMaterialFile(file);
+        removeCourseMaterialButton.addClickListener(event -> courseListPresenter.handleRemoveCourseMaterialButtonClick(courseName, removeCourseMaterialRequest));
+        return removeCourseMaterialButton;
     }
 
     private void addAttachCourseMaterialButtonForTeacher(HasComponents courseDetails, String courseName) {

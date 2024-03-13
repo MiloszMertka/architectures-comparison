@@ -62,4 +62,9 @@ class CourseConfig {
         return new AttachCourseMaterialInteractor(courseRepository, fileRepository, authContext);
     }
 
+    @Bean
+    public RemoveCourseMaterialUseCase removeCourseMaterialUseCase(CourseRepository courseRepository, FileRepository fileRepository, AuthContext authContext) {
+        return new RemoveCourseMaterialInteractor(courseRepository, fileRepository, authContext);
+    }
+
 }
