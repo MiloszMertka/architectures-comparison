@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,9 @@ public class CourseSchema {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<CourseMaterialSchema> courseMaterials;
 
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<QuizSchema> quizzes;
+
     public static CourseSchema fromCourse(@NonNull Course course) {
         final var teacher = UserSchema.fromUser(course.getTeacher());
         final var students = course.getStudents().stream()
@@ -40,7 +44,10 @@ public class CourseSchema {
         final var courseMaterials = course.getCourseMaterials().stream()
                 .map(CourseMaterialSchema::fromCourseMaterial)
                 .collect(Collectors.toSet());
-        return new CourseSchema(course.getId(), course.getName(), teacher, students, courseMaterials);
+        final var quizzes = course.getQuizzes().stream()
+                .map(QuizSchema::fromQuiz)
+                .toList();
+        return new CourseSchema(course.getId(), course.getName(), teacher, students, courseMaterials, quizzes);
     }
 
     public Course toCourse() {
@@ -51,9 +58,13 @@ public class CourseSchema {
         final var domainCourseMaterials = courseMaterials.stream()
                 .map(CourseMaterialSchema::toCourseMaterial)
                 .collect(Collectors.toSet());
+        final var domainQuizzes = quizzes.stream()
+                .map(QuizSchema::toQuiz)
+                .toList();
         final var course = new Course(id, name, domainTeacher);
         domainStudents.forEach(course::assignStudent);
         domainCourseMaterials.forEach(course::addCourseMaterial);
+        domainQuizzes.forEach(course::addQuiz);
         return course;
     }
 

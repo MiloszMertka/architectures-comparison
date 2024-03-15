@@ -4,6 +4,7 @@ import com.clean.elearning.course.adapter.dto.RemoveCourseMaterialRequest;
 import com.clean.elearning.course.adapter.ui.CourseListUI;
 import com.clean.elearning.course.adapter.ui.model.CourseMaterialViewModel;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
+import com.clean.elearning.course.adapter.ui.model.QuizViewModel;
 import com.clean.elearning.course.adapter.ui.presenter.CourseListPresenter;
 import com.clean.elearning.shared.service.SecurityService;
 import com.clean.elearning.shared.view.MainLayout;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Route(value = "my-courses", layout = MainLayout.class)
@@ -66,8 +68,10 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
             final var courseName = course.name();
             final var teacher = new Span("Teacher: " + course.teacherName());
             final var courseMaterialsList = createCourseMaterialsList(courseName, course.courseMaterials());
+            final var quizzesList = createQuizzesList(courseName, course.quizzes());
             final var courseDetails = new VerticalLayout(teacher, courseMaterialsList);
             addAttachCourseMaterialButtonForTeacher(courseDetails, courseName);
+            courseDetails.add(quizzesList);
             final var coursePanel = accordion.add(courseName, courseDetails);
             coursePanel.addThemeVariants(DetailsVariant.FILLED);
         });
@@ -97,6 +101,15 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         final var errorNotification = new Notification(message, 3000);
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         errorNotification.open();
+    }
+
+    @Override
+    public void navigateToSolveQuizFormView(@NonNull String courseName, @NonNull QuizViewModel quiz) {
+        final var courseNameRouteParam = new RouteParam("courseName", courseName);
+        final var quizNameRouteParam = new RouteParam("quizName", quiz.name());
+        getUI()
+                .flatMap(ui -> ui.navigate(SolveQuizFormView.class, courseNameRouteParam, quizNameRouteParam))
+                .ifPresent(view -> view.setQuiz(quiz));
     }
 
     private Component createCourseMaterialsList(String courseName, List<CourseMaterialViewModel> courseMaterialViewModels) {
@@ -160,6 +173,45 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         final var attachCourseMaterialButton = new Button("Attach course material", new Icon(VaadinIcon.UPLOAD));
         attachCourseMaterialButton.addClickListener(event -> courseListPresenter.handleAttachCourseMaterialButtonClick(courseName));
         return attachCourseMaterialButton;
+    }
+
+    private Component createQuizzesList(String courseName, List<QuizViewModel> quizzes) {
+        final var header = new Span("Quizzes:");
+        final var quizzesList = quizzes.stream()
+                .map(quiz -> {
+                    final var name = new Span(quiz.name());
+                    final var openingTime = new Span("Opening date: " + QuizViewModel.formatDateTime(quiz.openingTime()));
+                    final var closingTime = new Span("Closing date: " + QuizViewModel.formatDateTime(quiz.closingTime()));
+                    final var container = new VerticalLayout(name, openingTime, closingTime);
+                    container.setPadding(false);
+                    addSolveQuizButtonForStudent(container, courseName, quiz);
+                    return (Component) container;
+                })
+                .toList();
+        final var container = new VerticalLayout(header);
+        container.add(quizzesList);
+        container.setPadding(false);
+        return container;
+    }
+
+    private void addSolveQuizButtonForStudent(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
+        if (!securityService.getCurrentUser().isStudent()) {
+            return;
+        }
+
+        final var currentTime = LocalDateTime.now();
+        if (currentTime.isBefore(quiz.openingTime()) || currentTime.isAfter(quiz.closingTime())) {
+            return;
+        }
+
+        final var solveQuizButton = createSolveQuizButton(courseName, quiz);
+        courseDetails.add(solveQuizButton);
+    }
+
+    private Component createSolveQuizButton(String courseName, QuizViewModel quiz) {
+        final var solveQuizButton = new Button("Solve quiz", new Icon(VaadinIcon.PENCIL));
+        solveQuizButton.addClickListener(event -> courseListPresenter.handleSolveQuizButtonClick(courseName, quiz));
+        return solveQuizButton;
     }
 
 }

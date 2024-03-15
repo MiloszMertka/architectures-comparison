@@ -9,7 +9,8 @@ public record CourseViewModel(
         String name,
         UserViewModel teacher,
         List<UserViewModel> students,
-        List<CourseMaterialViewModel> courseMaterials
+        List<CourseMaterialViewModel> courseMaterials,
+        List<QuizViewModel> quizzes
 ) {
 
     public static CourseViewModel fromCourse(Course course) {
@@ -20,11 +21,15 @@ public record CourseViewModel(
         final var courseMaterials = course.getCourseMaterials().stream()
                 .map(CourseMaterialViewModel::fromCourseMaterial)
                 .toList();
+        final var quizzes = course.getQuizzes().stream()
+                .map(QuizViewModel::fromQuiz)
+                .toList();
         return new CourseViewModel(
                 course.getName(),
                 teacher,
                 students,
-                courseMaterials
+                courseMaterials,
+                quizzes
         );
     }
 

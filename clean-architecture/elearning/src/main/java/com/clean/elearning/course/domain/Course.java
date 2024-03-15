@@ -2,15 +2,14 @@ package com.clean.elearning.course.domain;
 
 import com.clean.elearning.user.domain.User;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Course {
 
     private final Long id;
     private final Set<User> students = new HashSet<>();
     private final Set<CourseMaterial> courseMaterials = new HashSet<>();
+    private final List<Quiz> quizzes = new ArrayList<>();
     private String name;
     private User teacher;
 
@@ -69,6 +68,29 @@ public class Course {
 
     public void removeCourseMaterial(CourseMaterial courseMaterial) {
         courseMaterials.remove(courseMaterial);
+    }
+
+    public List<Quiz> getQuizzes() {
+        return quizzes;
+    }
+
+    public Quiz getQuizByName(String quizName) {
+        return quizzes.stream()
+                .filter(quiz -> quiz.getName().equals(quizName))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public void addQuiz(Quiz quiz) {
+        quizzes.add(quiz);
+    }
+
+    public void removeQuiz(Quiz quiz) {
+        quizzes.remove(quiz);
+    }
+
+    public boolean isStudentEnrolled(User student) {
+        return students.contains(student);
     }
 
     @Override

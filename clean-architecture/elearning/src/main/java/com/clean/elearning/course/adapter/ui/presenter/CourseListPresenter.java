@@ -3,8 +3,10 @@ package com.clean.elearning.course.adapter.ui.presenter;
 import com.clean.elearning.course.adapter.dto.RemoveCourseMaterialRequest;
 import com.clean.elearning.course.adapter.ui.CourseListUI;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
+import com.clean.elearning.course.adapter.ui.model.QuizViewModel;
 import com.clean.elearning.course.usecase.BrowseUserCoursesUseCase;
 import com.clean.elearning.course.usecase.RemoveCourseMaterialUseCase;
+import com.clean.elearning.course.usecase.SolveQuizUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,6 +21,7 @@ public class CourseListPresenter {
 
     private final BrowseUserCoursesUseCase browseUserCoursesUseCase;
     private final RemoveCourseMaterialUseCase removeCourseMaterialUseCase;
+    private final SolveQuizUseCase solveQuizUseCase;
 
     @Setter
     private CourseListUI courseListUI;
@@ -46,6 +49,16 @@ public class CourseListPresenter {
         try {
             removeCourseMaterialUseCase.removeCourseMaterial(courseName, removeCourseMaterialRequest);
             handlePageLoad();
+        } catch (Exception exception) {
+            courseListUI.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('STUDENT')")
+    public void handleSolveQuizButtonClick(@NonNull String courseName, @NonNull QuizViewModel quiz) {
+        try {
+            courseListUI.navigateToSolveQuizFormView(courseName, quiz);
         } catch (Exception exception) {
             courseListUI.showErrorMessage(exception.getMessage());
         }

@@ -67,4 +67,9 @@ class CourseConfig {
         return new RemoveCourseMaterialInteractor(courseRepository, fileRepository, authContext);
     }
 
+    @Bean
+    public SolveQuizUseCase solveQuizUseCase(CourseRepository courseRepository, AuthContext authContext) {
+        return new SolveQuizInteractor(courseRepository, authContext);
+    }
+
 }
