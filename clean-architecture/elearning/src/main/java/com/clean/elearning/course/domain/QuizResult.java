@@ -19,10 +19,6 @@ public class QuizResult {
         return earnedScore;
     }
 
-    public int calculatePercentageCorrectness() {
-        return Math.toIntExact(Math.round(earnedScore / 100));
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(earnedScore);

@@ -64,6 +64,12 @@ public class Quiz {
         return quizResults;
     }
 
+    public double getTotalScore() {
+        return questions.stream()
+                .mapToDouble(Question::getScore)
+                .sum();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(name);

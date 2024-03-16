@@ -8,6 +8,7 @@ import com.clean.elearning.course.adapter.ui.model.QuizViewModel;
 import com.clean.elearning.course.adapter.ui.presenter.CourseListPresenter;
 import com.clean.elearning.shared.service.SecurityService;
 import com.clean.elearning.shared.view.MainLayout;
+import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -16,6 +17,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -113,7 +116,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     private Component createCourseMaterialsList(String courseName, List<CourseMaterialViewModel> courseMaterialViewModels) {
-        final var header = new Span("Course materials:");
+        final var header = new H3("Course materials");
         final var courseMaterials = courseMaterialViewModels.stream()
                 .map(courseMaterialViewModel -> createDownloadLink(courseName, courseMaterialViewModel))
                 .toList();
@@ -176,10 +179,10 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     private Component createQuizzesList(String courseName, List<QuizViewModel> quizzes) {
-        final var header = new Span("Quizzes:");
+        final var header = new H3("Quizzes");
         final var quizzesList = quizzes.stream()
                 .map(quiz -> {
-                    final var name = new Span(quiz.name());
+                    final var name = new H4(quiz.name());
                     final var openingTime = new Span("Opening date: " + QuizViewModel.formatDateTime(quiz.openingTime()));
                     final var closingTime = new Span("Closing date: " + QuizViewModel.formatDateTime(quiz.closingTime()));
                     final var container = new VerticalLayout(name, openingTime, closingTime);
@@ -195,7 +198,8 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     private void addSolveQuizButtonForStudent(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
-        if (!securityService.getCurrentUser().isStudent()) {
+        final var currentUser = securityService.getCurrentUser();
+        if (!currentUser.isStudent()) {
             return;
         }
 
@@ -204,8 +208,20 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
             return;
         }
 
+        final var currentStudent = UserViewModel.fromUser(currentUser);
+        if (quiz.isSolvedByStudent(currentStudent)) {
+            final var earnedScoreLabel = createEarnedScoreLabel(quiz, currentStudent);
+            courseDetails.add(earnedScoreLabel);
+            return;
+        }
+
         final var solveQuizButton = createSolveQuizButton(courseName, quiz);
         courseDetails.add(solveQuizButton);
+    }
+
+    private Component createEarnedScoreLabel(QuizViewModel quiz, UserViewModel student) {
+        final var quizResult = quiz.getQuizResultByStudent(student);
+        return new Span("Earned score: " + quizResult.earnedScore() + " / " + quiz.totalScore());
     }
 
     private Component createSolveQuizButton(String courseName, QuizViewModel quiz) {

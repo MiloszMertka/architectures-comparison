@@ -1,6 +1,7 @@
 package com.clean.elearning.course.adapter.ui.model;
 
 import com.clean.elearning.course.domain.Quiz;
+import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -11,7 +12,9 @@ public record QuizViewModel(
         String name,
         LocalDateTime openingTime,
         LocalDateTime closingTime,
-        List<QuestionViewModel> questions
+        List<QuestionViewModel> questions,
+        List<QuizResultViewModel> quizResults,
+        String totalScore
 ) {
 
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
@@ -22,11 +25,26 @@ public record QuizViewModel(
                 .toList();
         final var openingTime = LocalDateTime.ofInstant(quiz.getOpeningTime(), ZoneId.systemDefault());
         final var closingTime = LocalDateTime.ofInstant(quiz.getClosingTime(), ZoneId.systemDefault());
-        return new QuizViewModel(quiz.getName(), openingTime, closingTime, questions);
+        final var quizResults = quiz.getQuizResults().entrySet().stream()
+                .map(entry -> QuizResultViewModel.fromStudentAndQuizResult(entry.getKey(), entry.getValue()))
+                .toList();
+        final var totalScore = String.format("%.2f", quiz.getTotalScore());
+        return new QuizViewModel(quiz.getName(), openingTime, closingTime, questions, quizResults, totalScore);
     }
 
     public static String formatDateTime(LocalDateTime dateTime) {
         return dateTime.format(DATE_TIME_FORMAT);
+    }
+
+    public boolean isSolvedByStudent(UserViewModel student) {
+        return quizResults.stream().anyMatch(quizResult -> quizResult.student().equals(student));
+    }
+
+    public QuizResultViewModel getQuizResultByStudent(UserViewModel student) {
+        return quizResults.stream()
+                .filter(quizResult -> quizResult.student().equals(student))
+                .findFirst()
+                .orElseThrow();
     }
 
 }
