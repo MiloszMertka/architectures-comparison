@@ -5,8 +5,8 @@ import com.clean.elearning.course.adapter.ui.CourseListUI;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
 import com.clean.elearning.course.adapter.ui.model.QuizViewModel;
 import com.clean.elearning.course.usecase.BrowseUserCoursesUseCase;
+import com.clean.elearning.course.usecase.DeleteQuizUseCase;
 import com.clean.elearning.course.usecase.RemoveCourseMaterialUseCase;
-import com.clean.elearning.course.usecase.SolveQuizUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class CourseListPresenter {
 
     private final BrowseUserCoursesUseCase browseUserCoursesUseCase;
     private final RemoveCourseMaterialUseCase removeCourseMaterialUseCase;
-    private final SolveQuizUseCase solveQuizUseCase;
+    private final DeleteQuizUseCase deleteQuizUseCase;
 
     @Setter
     private CourseListUI courseListUI;
@@ -48,6 +48,21 @@ public class CourseListPresenter {
     public void handleRemoveCourseMaterialConfirm(@NonNull String courseName, @NonNull RemoveCourseMaterialRequest removeCourseMaterialRequest) {
         try {
             removeCourseMaterialUseCase.removeCourseMaterial(courseName, removeCourseMaterialRequest);
+            handlePageLoad();
+        } catch (Exception exception) {
+            courseListUI.showErrorMessage(exception.getMessage());
+        }
+    }
+
+    public void handleDeleteQuizButtonClick(@NonNull String courseName, @NonNull String quizName) {
+        courseListUI.showDeleteQuizConfirmDialog(courseName, quizName);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public void handleDeleteQuizConfirm(@NonNull String courseName, @NonNull String quizName) {
+        try {
+            deleteQuizUseCase.deleteQuiz(courseName, quizName);
             handlePageLoad();
         } catch (Exception exception) {
             courseListUI.showErrorMessage(exception.getMessage());

@@ -14,6 +14,8 @@ public interface CourseListUI {
 
     void showRemoveCourseMaterialConfirmDialog(String courseName, RemoveCourseMaterialRequest removeCourseMaterialRequest);
 
+    void showDeleteQuizConfirmDialog(String courseName, String quizName);
+
     void showErrorMessage(String message);
 
     void navigateToSolveQuizFormView(String courseName, QuizViewModel quiz);

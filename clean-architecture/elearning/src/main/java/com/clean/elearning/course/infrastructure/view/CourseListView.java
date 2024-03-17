@@ -100,6 +100,19 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     @Override
+    public void showDeleteQuizConfirmDialog(@NonNull String courseName, @NonNull String quizName) {
+        final var confirmDialog = new ConfirmDialog();
+        confirmDialog.setCancelable(true);
+        confirmDialog.setHeader("Delete quiz");
+        confirmDialog.setText("Are you sure you want to delete this quiz?");
+        confirmDialog.setCancelText("Cancel");
+        confirmDialog.setConfirmText("Delete");
+        confirmDialog.setConfirmButtonTheme(ButtonVariant.LUMO_PRIMARY.getVariantName() + " " + ButtonVariant.LUMO_ERROR.getVariantName());
+        confirmDialog.addConfirmListener(event -> courseListPresenter.handleDeleteQuizConfirm(courseName, quizName));
+        confirmDialog.open();
+    }
+
+    @Override
     public void showErrorMessage(@NonNull String message) {
         final var errorNotification = new Notification(message, 3000);
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -131,7 +144,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         final var streamResource = new StreamResource(file.getName(), () -> createStreamFromFile(file));
         final var downloadLink = new Anchor(streamResource, courseMaterialViewModel.name());
         downloadLink.getElement().setAttribute("download", true);
-        return addCreteRemoveCourseMaterialButtonForTeacher(downloadLink, courseName, courseMaterialViewModel.name(), file);
+        return addRemoveCourseMaterialButtonForTeacher(downloadLink, courseName, courseMaterialViewModel.name(), file);
     }
 
     private InputStream createStreamFromFile(File file) {
@@ -142,7 +155,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         }
     }
 
-    private Component addCreteRemoveCourseMaterialButtonForTeacher(Component downloadLink, String courseName, String courseMaterialName, File file) {
+    private Component addRemoveCourseMaterialButtonForTeacher(Component downloadLink, String courseName, String courseMaterialName, File file) {
         if (!securityService.getCurrentUser().isTeacher()) {
             return downloadLink;
         }
@@ -188,6 +201,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
                     final var container = new VerticalLayout(name, openingTime, closingTime);
                     container.setPadding(false);
                     addSolveQuizButtonForStudent(container, courseName, quiz);
+                    addDeleteQuizButtonForTeacher(container, courseName, quiz);
                     return (Component) container;
                 })
                 .toList();
@@ -228,6 +242,22 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         final var solveQuizButton = new Button("Solve quiz", new Icon(VaadinIcon.PENCIL));
         solveQuizButton.addClickListener(event -> courseListPresenter.handleSolveQuizButtonClick(courseName, quiz));
         return solveQuizButton;
+    }
+
+    private void addDeleteQuizButtonForTeacher(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
+        if (!securityService.getCurrentUser().isTeacher()) {
+            return;
+        }
+
+        final var deleteQuizButton = createDeleteQuizButton(courseName, quiz);
+        courseDetails.add(deleteQuizButton);
+    }
+
+    private Component createDeleteQuizButton(String courseName, QuizViewModel quiz) {
+        final var deleteQuizButton = new Button("Delete quiz", new Icon(VaadinIcon.TRASH));
+        deleteQuizButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
+        deleteQuizButton.addClickListener(event -> courseListPresenter.handleDeleteQuizButtonClick(courseName, quiz.name()));
+        return deleteQuizButton;
     }
 
 }
