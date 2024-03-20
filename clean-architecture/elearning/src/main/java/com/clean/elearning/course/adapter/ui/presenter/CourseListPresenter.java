@@ -54,6 +54,10 @@ public class CourseListPresenter {
         }
     }
 
+    public void handleCreateQuizButtonClick(@NonNull String courseName) {
+        courseListUI.navigateToCreateQuizFormView(courseName);
+    }
+
     public void handleDeleteQuizButtonClick(@NonNull String courseName, @NonNull String quizName) {
         courseListUI.showDeleteQuizConfirmDialog(courseName, quizName);
     }

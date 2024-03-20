@@ -75,6 +75,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
             final var courseDetails = new VerticalLayout(teacher, courseMaterialsList);
             addAttachCourseMaterialButtonForTeacher(courseDetails, courseName);
             courseDetails.add(quizzesList);
+            addCreateQuizButtonForTeacher(courseDetails, courseName);
             final var coursePanel = accordion.add(courseName, courseDetails);
             coursePanel.addThemeVariants(DetailsVariant.FILLED);
         });
@@ -97,6 +98,12 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         confirmDialog.setConfirmButtonTheme(ButtonVariant.LUMO_PRIMARY.getVariantName() + " " + ButtonVariant.LUMO_ERROR.getVariantName());
         confirmDialog.addConfirmListener(event -> courseListPresenter.handleRemoveCourseMaterialConfirm(courseName, removeCourseMaterialRequest));
         confirmDialog.open();
+    }
+
+    @Override
+    public void navigateToCreateQuizFormView(@NonNull String courseName) {
+        final var courseNameRouteParam = new RouteParam("courseName", courseName);
+        getUI().ifPresent(ui -> ui.navigate(CreateQuizFormView.class, courseNameRouteParam));
     }
 
     @Override
@@ -255,9 +262,24 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
 
     private Component createDeleteQuizButton(String courseName, QuizViewModel quiz) {
         final var deleteQuizButton = new Button("Delete quiz", new Icon(VaadinIcon.TRASH));
-        deleteQuizButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR);
+        deleteQuizButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteQuizButton.addClickListener(event -> courseListPresenter.handleDeleteQuizButtonClick(courseName, quiz.name()));
         return deleteQuizButton;
+    }
+
+    private void addCreateQuizButtonForTeacher(HasComponents courseDetails, String courseName) {
+        if (!securityService.getCurrentUser().isTeacher()) {
+            return;
+        }
+
+        final var createQuizButton = createCreateQuizButton(courseName);
+        courseDetails.add(createQuizButton);
+    }
+
+    private Component createCreateQuizButton(String courseName) {
+        final var createQuizButton = new Button("Create quiz", new Icon(VaadinIcon.PLUS));
+        createQuizButton.addClickListener(event -> courseListPresenter.handleCreateQuizButtonClick(courseName));
+        return createQuizButton;
     }
 
 }
