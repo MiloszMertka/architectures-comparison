@@ -1,6 +1,7 @@
 package com.clean.elearning.course.infrastructure.view;
 
 import com.clean.elearning.course.adapter.dto.RemoveCourseMaterialRequest;
+import com.clean.elearning.course.adapter.dto.UpdateQuizRequest;
 import com.clean.elearning.course.adapter.ui.CourseListUI;
 import com.clean.elearning.course.adapter.ui.model.CourseMaterialViewModel;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
@@ -107,6 +108,15 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     @Override
+    public void navigateToEditQuizFormView(@NonNull String courseName, @NonNull UpdateQuizRequest updateQuizRequest) {
+        final var courseNameRouteParam = new RouteParam("courseName", courseName);
+        final var quizNameRouteParam = new RouteParam("quizName", updateQuizRequest.getName());
+        getUI()
+                .flatMap(ui -> ui.navigate(EditQuizFormView.class, courseNameRouteParam, quizNameRouteParam))
+                .ifPresent(view -> view.setQuiz(updateQuizRequest));
+    }
+
+    @Override
     public void showDeleteQuizConfirmDialog(@NonNull String courseName, @NonNull String quizName) {
         final var confirmDialog = new ConfirmDialog();
         confirmDialog.setCancelable(true);
@@ -208,6 +218,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
                     final var container = new VerticalLayout(name, openingTime, closingTime);
                     container.setPadding(false);
                     addSolveQuizButtonForStudent(container, courseName, quiz);
+                    addEditQuizButtonForTeacher(container, courseName, quiz);
                     addDeleteQuizButtonForTeacher(container, courseName, quiz);
                     return (Component) container;
                 })
@@ -265,6 +276,21 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         deleteQuizButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteQuizButton.addClickListener(event -> courseListPresenter.handleDeleteQuizButtonClick(courseName, quiz.name()));
         return deleteQuizButton;
+    }
+
+    private void addEditQuizButtonForTeacher(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
+        if (!securityService.getCurrentUser().isTeacher()) {
+            return;
+        }
+
+        final var editQuizButton = createEditQuizButton(courseName, quiz);
+        courseDetails.add(editQuizButton);
+    }
+
+    private Component createEditQuizButton(String courseName, QuizViewModel quiz) {
+        final var editQuizButton = new Button("Edit quiz", new Icon(VaadinIcon.EDIT));
+        editQuizButton.addClickListener(event -> courseListPresenter.handleEditQuizButtonClick(courseName, quiz));
+        return editQuizButton;
     }
 
     private void addCreateQuizButtonForTeacher(HasComponents courseDetails, String courseName) {

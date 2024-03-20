@@ -73,6 +73,11 @@ class CourseConfig {
     }
 
     @Bean
+    public UpdateQuizUseCase updateQuizUseCase(CourseRepository courseRepository, AuthContext authContext) {
+        return new UpdateQuizInteractor(courseRepository, authContext);
+    }
+
+    @Bean
     public DeleteQuizUseCase deleteQuizUseCase(CourseRepository courseRepository, AuthContext authContext) {
         return new DeleteQuizInteractor(courseRepository, authContext);
     }

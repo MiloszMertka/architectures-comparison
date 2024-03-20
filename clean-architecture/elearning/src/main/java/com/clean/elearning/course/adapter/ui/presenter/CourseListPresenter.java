@@ -1,8 +1,13 @@
 package com.clean.elearning.course.adapter.ui.presenter;
 
+import com.clean.elearning.course.adapter.dto.AnswerDto;
+import com.clean.elearning.course.adapter.dto.QuestionDto;
 import com.clean.elearning.course.adapter.dto.RemoveCourseMaterialRequest;
+import com.clean.elearning.course.adapter.dto.UpdateQuizRequest;
 import com.clean.elearning.course.adapter.ui.CourseListUI;
+import com.clean.elearning.course.adapter.ui.model.AnswerViewModel;
 import com.clean.elearning.course.adapter.ui.model.CourseViewModel;
+import com.clean.elearning.course.adapter.ui.model.QuestionViewModel;
 import com.clean.elearning.course.adapter.ui.model.QuizViewModel;
 import com.clean.elearning.course.usecase.BrowseUserCoursesUseCase;
 import com.clean.elearning.course.usecase.DeleteQuizUseCase;
@@ -14,6 +19,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -58,6 +65,11 @@ public class CourseListPresenter {
         courseListUI.navigateToCreateQuizFormView(courseName);
     }
 
+    public void handleEditQuizButtonClick(@NonNull String courseName, @NonNull QuizViewModel quiz) {
+        final var updateQuizRequest = createUpdateQuizRequest(quiz);
+        courseListUI.navigateToEditQuizFormView(courseName, updateQuizRequest);
+    }
+
     public void handleDeleteQuizButtonClick(@NonNull String courseName, @NonNull String quizName) {
         courseListUI.showDeleteQuizConfirmDialog(courseName, quizName);
     }
@@ -81,6 +93,34 @@ public class CourseListPresenter {
         } catch (Exception exception) {
             courseListUI.showErrorMessage(exception.getMessage());
         }
+    }
+
+    private UpdateQuizRequest createUpdateQuizRequest(QuizViewModel quiz) {
+        final var updateQuizRequest = new UpdateQuizRequest();
+        updateQuizRequest.setName(quiz.name());
+        updateQuizRequest.setOpeningTime(quiz.openingTime());
+        updateQuizRequest.setClosingTime(quiz.closingTime());
+        updateQuizRequest.setQuestions(quiz.questions().stream()
+                .map(this::mapQuestionViewModelToDto)
+                .collect(Collectors.toList()));
+        return updateQuizRequest;
+    }
+
+    private QuestionDto mapQuestionViewModelToDto(QuestionViewModel questionViewModel) {
+        final var questionDto = new QuestionDto();
+        questionDto.setContent(questionViewModel.content());
+        questionDto.setScore(questionViewModel.score());
+        questionDto.setAnswers(questionViewModel.answers().stream()
+                .map(this::mapAnswerViewModelToDto)
+                .collect(Collectors.toList()));
+        return questionDto;
+    }
+
+    private AnswerDto mapAnswerViewModelToDto(AnswerViewModel answerViewModel) {
+        final var answerDto = new AnswerDto();
+        answerDto.setContent(answerViewModel.content());
+        answerDto.setCorrect(answerViewModel.isCorrect());
+        return answerDto;
     }
 
 }

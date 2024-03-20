@@ -1,5 +1,6 @@
 package com.clean.elearning.course.usecase.interactor;
 
+import com.clean.elearning.course.domain.Answer;
 import com.clean.elearning.course.domain.Course;
 import com.clean.elearning.course.domain.CourseRepository;
 import com.clean.elearning.course.domain.Quiz;
@@ -28,6 +29,7 @@ public class CreateQuizInteractor implements CreateQuizUseCase {
         final var openingTime = createQuizModel.getOpeningTime().atZone(ZoneId.systemDefault()).toInstant();
         final var closingTime = createQuizModel.getClosingTime().atZone(ZoneId.systemDefault()).toInstant();
         validateClosingTimeIsAfterOpeningTime(closingTime, openingTime);
+        validateEveryQuestionHasAtLeastOneCorrectAnswer(createQuizModel);
         final var quiz = new Quiz(createQuizModel.getName(), openingTime, closingTime, createQuizModel.getQuestions());
         course.addQuiz(quiz);
         courseRepository.saveCourse(course);
@@ -52,6 +54,16 @@ public class CreateQuizInteractor implements CreateQuizUseCase {
     private void validateClosingTimeIsAfterOpeningTime(Instant closingTime, Instant openingTime) {
         if (closingTime.isBefore(openingTime)) {
             throw new IllegalStateException("Closing time is before opening time");
+        }
+    }
+
+    private void validateEveryQuestionHasAtLeastOneCorrectAnswer(CreateQuizModel createQuizModel) {
+        if (createQuizModel.getQuestions().stream()
+                .anyMatch(question -> question.getAnswers().stream()
+                        .noneMatch(Answer::isCorrect)
+                )
+        ) {
+            throw new IllegalStateException("Every question must have at least one correct answer");
         }
     }
 

@@ -1,7 +1,7 @@
 package com.clean.elearning.course.adapter.dto;
 
 import com.clean.elearning.course.domain.Question;
-import com.clean.elearning.course.usecase.model.CreateQuizModel;
+import com.clean.elearning.course.usecase.model.UpdateQuizModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateQuizRequest implements CreateQuizModel, QuizRequest {
+public class UpdateQuizRequest implements UpdateQuizModel, QuizRequest {
 
     @NotBlank
     @Size(max = 255)
@@ -39,6 +39,10 @@ public class CreateQuizRequest implements CreateQuizModel, QuizRequest {
         return questions.stream()
                 .map(QuestionDto::toQuestion)
                 .toList();
+    }
+
+    public List<QuestionDto> getQuestionDtos() {
+        return questions;
     }
 
     public QuestionDto addQuestion() {

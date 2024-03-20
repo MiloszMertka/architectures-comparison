@@ -1,8 +1,8 @@
 package com.clean.elearning.course.infrastructure.view;
 
-import com.clean.elearning.course.adapter.dto.CreateQuizRequest;
-import com.clean.elearning.course.adapter.ui.CreateQuizFormUI;
-import com.clean.elearning.course.adapter.ui.presenter.CreateQuizFormPresenter;
+import com.clean.elearning.course.adapter.dto.UpdateQuizRequest;
+import com.clean.elearning.course.adapter.ui.EditQuizFormUI;
+import com.clean.elearning.course.adapter.ui.presenter.EditQuizFormPresenter;
 import com.clean.elearning.shared.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -23,13 +23,13 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.lang.NonNull;
 
-@Route(value = "courses/:courseName/quizzes/create", layout = MainLayout.class)
-@PageTitle("Create quiz")
+@Route(value = "courses/:courseName/quizzes/edit/:quizName", layout = MainLayout.class)
+@PageTitle("Edit quiz")
 @RolesAllowed("TEACHER")
-public class CreateQuizFormView extends VerticalLayout implements BeforeEnterObserver, CreateQuizFormUI, QuizFormView {
+public class EditQuizFormView extends VerticalLayout implements BeforeEnterObserver, EditQuizFormUI, QuizFormView {
 
-    private final CreateQuizFormPresenter createQuizFormPresenter;
-    private final BeanValidationBinder<CreateQuizRequest> binder = new BeanValidationBinder<>(CreateQuizRequest.class);
+    private final EditQuizFormPresenter editQuizFormPresenter;
+    private final BeanValidationBinder<UpdateQuizRequest> binder = new BeanValidationBinder<>(UpdateQuizRequest.class);
     private final VerticalLayout fieldsContainer = new VerticalLayout();
     private final TextField name = new TextField("Name");
     private final DateTimePicker openingTime = new DateTimePicker("Opening time");
@@ -37,20 +37,27 @@ public class CreateQuizFormView extends VerticalLayout implements BeforeEnterObs
     private final Button addQuestionButton = new Button("Add question", new Icon(VaadinIcon.PLUS));
     private final Button saveButton = new Button("Save");
     private String courseName;
+    private String quizName;
 
-    public CreateQuizFormView(CreateQuizFormPresenter createQuizFormPresenter) {
-        this.createQuizFormPresenter = createQuizFormPresenter;
-        createQuizFormPresenter.setCreateQuizFormUI(this);
-        binder.setBean(new CreateQuizRequest());
-        bindFields();
-        configureAddQuestionButton();
-        configureSaveButton();
-        configureLayout();
+    public EditQuizFormView(EditQuizFormPresenter editQuizFormPresenter) {
+        this.editQuizFormPresenter = editQuizFormPresenter;
+        editQuizFormPresenter.setEditQuizFormUI(this);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         courseName = beforeEnterEvent.getRouteParameters().get("courseName").orElseThrow();
+        quizName = beforeEnterEvent.getRouteParameters().get("quizName").orElseThrow();
+    }
+
+    @Override
+    public void setQuiz(@NonNull UpdateQuizRequest updateQuizRequest) {
+        binder.setBean(updateQuizRequest);
+        bindFields();
+        configureAddQuestionButton();
+        configureSaveButton();
+        configureLayout();
+        createInitialQuestionFields();
     }
 
     @Override
@@ -80,9 +87,9 @@ public class CreateQuizFormView extends VerticalLayout implements BeforeEnterObs
     }
 
     private void bindFields() {
-        binder.forField(name).bind(CreateQuizRequest::getName, CreateQuizRequest::setName);
-        binder.forField(openingTime).bind(CreateQuizRequest::getOpeningTime, CreateQuizRequest::setOpeningTime);
-        binder.forField(closingTime).bind(CreateQuizRequest::getClosingTime, CreateQuizRequest::setClosingTime);
+        binder.forField(name).bind(UpdateQuizRequest::getName, UpdateQuizRequest::setName);
+        binder.forField(openingTime).bind(UpdateQuizRequest::getOpeningTime, UpdateQuizRequest::setOpeningTime);
+        binder.forField(closingTime).bind(UpdateQuizRequest::getClosingTime, UpdateQuizRequest::setClosingTime);
     }
 
     private void configureAddQuestionButton() {
@@ -91,7 +98,7 @@ public class CreateQuizFormView extends VerticalLayout implements BeforeEnterObs
 
     private void configureSaveButton() {
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.addClickListener(event -> createQuizFormPresenter.handleSaveQuizButtonClick(courseName, binder.getBean()));
+        saveButton.addClickListener(event -> editQuizFormPresenter.handleSaveQuizButtonClick(courseName, quizName, binder.getBean()));
     }
 
     private void configureLayout() {
@@ -102,14 +109,20 @@ public class CreateQuizFormView extends VerticalLayout implements BeforeEnterObs
         openingTime.setWidthFull();
         closingTime.setWidthFull();
         fieldsContainer.add(name, generalFields);
-        addQuestionField();
-        add(new H1("Create quiz"), fieldsContainer, addQuestionButton, saveButton);
+        add(new H1("Edit quiz"), fieldsContainer, addQuestionButton, saveButton);
     }
 
     private void addQuestionField() {
         final var questionData = binder.getBean().addQuestion();
         final var questionComponent = new QuestionComponent(this, questionData, binder);
         fieldsContainer.add(questionComponent);
+    }
+
+    private void createInitialQuestionFields() {
+        binder.getBean().getQuestionDtos().forEach(questionDto -> {
+            final var questionComponent = new QuestionComponent(this, questionDto, binder);
+            fieldsContainer.add(questionComponent);
+        });
     }
 
 }
