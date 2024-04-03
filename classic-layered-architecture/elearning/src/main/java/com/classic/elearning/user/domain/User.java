@@ -89,4 +89,8 @@ public class User implements UserDetails {
         return role == Role.ADMIN;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
 }

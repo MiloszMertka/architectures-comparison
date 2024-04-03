@@ -9,6 +9,7 @@ import com.vaadin.flow.spring.security.AuthenticationContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,20 +27,28 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationContext authenticationContext;
 
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> browseUsers() {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> browseUsers(String searchText) {
         return userRepository.search(searchText);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void createUser(CreateUserRequest createUserRequest) {
         validateUserDoesNotExist(createUserRequest.getEmail());
         final var user = createUserFromRequest(createUserRequest);
         userRepository.save(user);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void updateUser(String email, UpdateUserRequest updateUserRequest) {
         validateEmailIsNotTaken(email, updateUserRequest.getEmail());
         final var user = getUserByEmail(email);
@@ -47,11 +56,14 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String email) {
         validateUserExists(email);
         userRepository.deleteByEmail(email);
     }
 
+    @Transactional
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         final var user = authenticationContext.getAuthenticatedUser(User.class).orElseThrow();
         validateCurrentPassword(changePasswordRequest.getCurrentPassword(), user.getPassword());
