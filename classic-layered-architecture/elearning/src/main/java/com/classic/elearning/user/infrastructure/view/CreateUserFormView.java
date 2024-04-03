@@ -1,10 +1,9 @@
 package com.classic.elearning.user.infrastructure.view;
 
 import com.classic.elearning.shared.view.MainLayout;
-import com.classic.elearning.user.infrastructure.dto.CreateUserRequest;
-import com.classic.elearning.user.infrastructure.ui.CreateUserFormUI;
-import com.classic.elearning.user.infrastructure.ui.presenter.CreateUserFormPresenter;
 import com.classic.elearning.user.domain.Role;
+import com.classic.elearning.user.infrastructure.dto.CreateUserRequest;
+import com.classic.elearning.user.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -28,9 +27,9 @@ import org.springframework.lang.NonNull;
 @Route(value = "users/create", layout = MainLayout.class)
 @PageTitle("Create user")
 @RolesAllowed("ADMIN")
-public class CreateUserFormView extends VerticalLayout implements CreateUserFormUI {
+public class CreateUserFormView extends VerticalLayout {
 
-    private final CreateUserFormPresenter createUserFormPresenter;
+    private final UserService userService;
     private final BeanValidationBinder<CreateUserRequest> binder = new BeanValidationBinder<>(CreateUserRequest.class);
     private final TextField firstName = new TextField("First name");
     private final TextField lastName = new TextField("Last name");
@@ -40,30 +39,12 @@ public class CreateUserFormView extends VerticalLayout implements CreateUserForm
     private final Button saveButton = new Button("Save");
     private final Button cancelButton = new Button("Cancel");
 
-    public CreateUserFormView(CreateUserFormPresenter createUserFormPresenter) {
-        this.createUserFormPresenter = createUserFormPresenter;
-        createUserFormPresenter.setCreateUserFormUI(this);
+    public CreateUserFormView(UserService userService) {
+        this.userService = userService;
         binder.bindInstanceFields(this);
         binder.setBean(new CreateUserRequest());
         final var content = createContent();
         add(content);
-    }
-
-    @Override
-    public boolean isFormValid() {
-        return binder.validate().isOk();
-    }
-
-    @Override
-    public void navigateToUserListView() {
-        getUI().ifPresent(ui -> ui.navigate(UserListView.class));
-    }
-
-    @Override
-    public void showErrorMessage(@NonNull String message) {
-        final var errorNotification = new Notification(message, 3000);
-        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        errorNotification.open();
     }
 
     private Component createContent() {
@@ -91,10 +72,33 @@ public class CreateUserFormView extends VerticalLayout implements CreateUserForm
         saveButton.addClickShortcut(Key.ENTER);
         cancelButton.addClickShortcut(Key.ESCAPE);
 
-        saveButton.addClickListener(click -> createUserFormPresenter.handleSaveUserButtonClick(binder.getBean()));
+        saveButton.addClickListener(click -> handleSaveUserButtonClick(binder.getBean()));
         cancelButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate(UserListView.class)));
 
         return new HorizontalLayout(saveButton, cancelButton);
+    }
+
+    private void navigateToUserListView() {
+        getUI().ifPresent(ui -> ui.navigate(UserListView.class));
+    }
+
+    private void showErrorMessage(@NonNull String message) {
+        final var errorNotification = new Notification(message, 3000);
+        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        errorNotification.open();
+    }
+
+    private void handleSaveUserButtonClick(@NonNull CreateUserRequest createUserRequest) {
+        if (!binder.validate().isOk()) {
+            return;
+        }
+
+        try {
+            userService.createUser(createUserRequest);
+            navigateToUserListView();
+        } catch (Exception exception) {
+            showErrorMessage(exception.getMessage());
+        }
     }
 
 }
