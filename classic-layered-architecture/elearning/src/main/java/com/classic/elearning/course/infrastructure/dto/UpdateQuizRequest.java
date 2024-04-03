@@ -12,6 +12,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -37,7 +38,7 @@ public class UpdateQuizRequest implements QuizRequest {
     public List<Question> getQuestions() {
         return questions.stream()
                 .map(QuestionDto::toQuestion)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<QuestionDto> getQuestionDtos() {

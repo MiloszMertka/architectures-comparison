@@ -28,18 +28,22 @@ public class Course {
     @ManyToOne(optional = false)
     private User teacher;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<User> students = new HashSet<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<CourseMaterial> courseMaterials = new HashSet<>();
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Quiz> quizzes = new ArrayList<>();
 
     public Course(String name, User teacher) {
         this.name = name;
         this.teacher = teacher;
+    }
+
+    public String getTeacherName() {
+        return teacher.getFirstName() + " " + teacher.getLastName();
     }
 
     public void assignStudent(User student) {
@@ -70,12 +74,6 @@ public class Course {
 
     public boolean isStudentEnrolled(User student) {
         return students.contains(student);
-    }
-
-    private void validateUserIsTeacher(User user) {
-        if (!user.isTeacher()) {
-            throw new IllegalArgumentException("User is not a teacher");
-        }
     }
 
     private void validateUserIsStudent(User user) {

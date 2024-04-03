@@ -55,7 +55,7 @@ public class QuizService {
         validateTeacherOwnsCourse(course);
         validateNameIsNotTaken(course, quizName, updateQuizRequest.getName());
         validateEveryQuestionHasAtLeastOneCorrectAnswer(updateQuizRequest);
-        final var quiz = getQuizByName(course, updateQuizRequest.getName());
+        final var quiz = getQuizByName(course, quizName);
         updateQuizFromRequest(quiz, updateQuizRequest);
         courseRepository.save(course);
     }

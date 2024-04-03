@@ -25,7 +25,7 @@ public class Question {
     @Column(nullable = false)
     private double score;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Answer> answers = new ArrayList<>();
 
 }

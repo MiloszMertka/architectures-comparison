@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -40,7 +41,7 @@ public class QuestionDto {
     public Question toQuestion() {
         return new Question(null, content, score, answers.stream()
                 .map(AnswerDto::toAnswer)
-                .toList());
+                .collect(Collectors.toList()));
     }
 
 }
