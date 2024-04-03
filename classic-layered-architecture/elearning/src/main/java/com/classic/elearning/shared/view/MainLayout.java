@@ -1,11 +1,7 @@
 package com.classic.elearning.shared.view;
 
-import com.classic.elearning.course.infrastructure.view.AdminCourseListView;
-import com.classic.elearning.course.infrastructure.view.CourseListView;
-import com.classic.elearning.shared.service.SecurityService;
-import com.classic.elearning.user.domain.Role;
+import com.classic.elearning.user.domain.User;
 import com.classic.elearning.user.infrastructure.view.ChangePasswordFormView;
-import com.classic.elearning.user.infrastructure.view.UserListView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -13,17 +9,17 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 import static com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import static com.vaadin.flow.theme.lumo.LumoUtility.*;
 
 public class MainLayout extends AppLayout {
 
-    private final SecurityService securityService;
+    private final AuthenticationContext authenticationContext;
 
-    public MainLayout(SecurityService securityService) {
-        this.securityService = securityService;
+    public MainLayout(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
         createHeader();
         createDrawer();
     }
@@ -57,7 +53,7 @@ public class MainLayout extends AppLayout {
 
     private Component createLogoutButton() {
         final var logoutButton = new Button("Logout");
-        logoutButton.addClickListener(event -> securityService.logout());
+        logoutButton.addClickListener(event -> authenticationContext.logout());
         return logoutButton;
     }
 
@@ -68,17 +64,19 @@ public class MainLayout extends AppLayout {
 
     private Component createLinks() {
         final var links = new VerticalLayout();
+        final var user = authenticationContext.getAuthenticatedUser(User.class).orElseThrow();
 
-        if (securityService.getCurrentUser().getRole().equals(Role.ADMIN)) {
-            links.add(
-                    new RouterLink("Courses", AdminCourseListView.class),
-                    new RouterLink("Users", UserListView.class)
-            );
-        } else {
-            links.add(
-                    new RouterLink("My courses", CourseListView.class)
-            );
-        }
+        // TODO: Uncomment this code after implementing the views
+//        if (user.getRole().equals(Role.ADMIN)) {
+//            links.add(
+//                    new RouterLink("Courses", AdminCourseListView.class),
+//                    new RouterLink("Users", UserListView.class)
+//            );
+//        } else {
+//            links.add(
+//                    new RouterLink("My courses", CourseListView.class)
+//            );
+//        }
 
         return links;
     }

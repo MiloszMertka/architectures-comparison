@@ -34,7 +34,7 @@ public class UserSeeder implements Seeder {
 
             if (!users.contains(user)) {
                 users.add(user);
-                userRepository.saveUser(user);
+                userRepository.save(user);
             }
         }
     }
@@ -46,6 +46,7 @@ public class UserSeeder implements Seeder {
 
     private User createRandomUser() {
         return new User(
+                null,
                 faker.name().firstName(),
                 faker.name().lastName(),
                 faker.internet().emailAddress(),

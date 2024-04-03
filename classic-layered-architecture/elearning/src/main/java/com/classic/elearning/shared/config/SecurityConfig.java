@@ -5,13 +5,14 @@ import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE, onConstructor = @__(@Lazy))
 @EnableWebSecurity
 @EnableMethodSecurity
 class SecurityConfig extends VaadinWebSecurity {
