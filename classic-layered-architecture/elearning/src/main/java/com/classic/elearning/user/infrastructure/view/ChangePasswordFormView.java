@@ -3,8 +3,7 @@ package com.classic.elearning.user.infrastructure.view;
 import com.classic.elearning.shared.view.HomeView;
 import com.classic.elearning.shared.view.MainLayout;
 import com.classic.elearning.user.infrastructure.dto.ChangePasswordRequest;
-import com.classic.elearning.user.infrastructure.ui.ChangePasswordFormUI;
-import com.classic.elearning.user.infrastructure.ui.presenter.ChangePasswordFormPresenter;
+import com.classic.elearning.user.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -25,38 +24,20 @@ import org.springframework.lang.NonNull;
 @Route(value = "change-password", layout = MainLayout.class)
 @PageTitle("Change password")
 @PermitAll
-public class ChangePasswordFormView extends VerticalLayout implements ChangePasswordFormUI {
+public class ChangePasswordFormView extends VerticalLayout {
 
-    private final ChangePasswordFormPresenter changePasswordFormPresenter;
+    private final UserService userService;
     private final BeanValidationBinder<ChangePasswordRequest> binder = new BeanValidationBinder<>(ChangePasswordRequest.class);
     private final TextField currentPassword = new TextField("Current password");
     private final TextField newPassword = new TextField("New password");
     private final Button changePasswordButton = new Button("Change password");
 
-    public ChangePasswordFormView(ChangePasswordFormPresenter changePasswordFormPresenter) {
-        this.changePasswordFormPresenter = changePasswordFormPresenter;
-        changePasswordFormPresenter.setChangePasswordFormUI(this);
+    public ChangePasswordFormView(UserService userService) {
+        this.userService = userService;
         binder.bindInstanceFields(this);
         binder.setBean(new ChangePasswordRequest());
         final var content = createContent();
         add(content);
-    }
-
-    @Override
-    public boolean isFormValid() {
-        return binder.validate().isOk();
-    }
-
-    @Override
-    public void navigateToHomeView() {
-        getUI().ifPresent(ui -> ui.navigate(HomeView.class));
-    }
-
-    @Override
-    public void showErrorMessage(@NonNull String message) {
-        final var errorNotification = new Notification(message, 3000);
-        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        errorNotification.open();
     }
 
     private Component createContent() {
@@ -73,8 +54,31 @@ public class ChangePasswordFormView extends VerticalLayout implements ChangePass
     private Component createButtonsLayout() {
         changePasswordButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         changePasswordButton.addClickShortcut(Key.ENTER);
-        changePasswordButton.addClickListener(click -> changePasswordFormPresenter.handleChangePasswordButtonClick(binder.getBean()));
+        changePasswordButton.addClickListener(click -> handleChangePasswordButtonClick(binder.getBean()));
         return new HorizontalLayout(changePasswordButton);
+    }
+
+    private void handleChangePasswordButtonClick(@NonNull ChangePasswordRequest changePasswordRequest) {
+        if (!binder.validate().isOk()) {
+            return;
+        }
+
+        try {
+            userService.changePassword(changePasswordRequest);
+            navigateToHomeView();
+        } catch (Exception exception) {
+            showErrorMessage(exception.getMessage());
+        }
+    }
+
+    private void navigateToHomeView() {
+        getUI().ifPresent(ui -> ui.navigate(HomeView.class));
+    }
+
+    private void showErrorMessage(@NonNull String message) {
+        final var errorNotification = new Notification(message, 3000);
+        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        errorNotification.open();
     }
 
 }
