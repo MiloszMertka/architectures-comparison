@@ -38,6 +38,13 @@ public class Quiz {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private Map<User, QuizResult> quizResults = new HashMap<>();
 
+    public Quiz(String name, Instant openingTime, Instant closingTime, List<Question> questions) {
+        this.name = name;
+        this.openingTime = openingTime;
+        this.closingTime = closingTime;
+        this.questions = questions;
+    }
+
     public double getTotalScore() {
         return questions.stream()
                 .mapToDouble(Question::getScore)

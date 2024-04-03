@@ -37,6 +37,11 @@ public class Course {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Quiz> quizzes = new ArrayList<>();
 
+    public Course(String name, User teacher) {
+        this.name = name;
+        this.teacher = teacher;
+    }
+
     public void assignStudent(User student) {
         validateUserIsStudent(student);
         students.add(student);
