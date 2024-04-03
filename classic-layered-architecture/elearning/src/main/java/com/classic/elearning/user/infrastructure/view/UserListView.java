@@ -119,7 +119,7 @@ public class UserListView extends VerticalLayout {
         showDeleteUserConfirmDialog(user);
     }
 
-    public void handleDeleteUserConfirm(@NonNull User user) {
+    private void handleDeleteUserConfirm(@NonNull User user) {
         userService.deleteUser(user.getEmail());
         handlePageLoad();
     }

@@ -2,8 +2,7 @@ package com.classic.elearning.user.infrastructure.view;
 
 import com.classic.elearning.shared.view.MainLayout;
 import com.classic.elearning.user.infrastructure.dto.UpdateUserRequest;
-import com.classic.elearning.user.infrastructure.ui.EditUserFormUI;
-import com.classic.elearning.user.infrastructure.ui.presenter.EditUserFormPresenter;
+import com.classic.elearning.user.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -27,9 +26,9 @@ import org.springframework.lang.NonNull;
 @Route(value = "users/edit", layout = MainLayout.class)
 @PageTitle("Edit user")
 @RolesAllowed("ADMIN")
-public class EditUserFormView extends VerticalLayout implements HasUrlParameter<String>, EditUserFormUI {
+public class EditUserFormView extends VerticalLayout implements HasUrlParameter<String> {
 
-    private final EditUserFormPresenter editUserFormPresenter;
+    private final UserService userService;
     private final BeanValidationBinder<UpdateUserRequest> binder = new BeanValidationBinder<>(UpdateUserRequest.class);
     private final TextField firstName = new TextField("First name");
     private final TextField lastName = new TextField("Last name");
@@ -38,9 +37,8 @@ public class EditUserFormView extends VerticalLayout implements HasUrlParameter<
     private final Button cancelButton = new Button("Cancel");
     private String userEmail;
 
-    public EditUserFormView(EditUserFormPresenter editUserFormPresenter) {
-        this.editUserFormPresenter = editUserFormPresenter;
-        editUserFormPresenter.setEditUserFormUI(this);
+    public EditUserFormView(UserService userService) {
+        this.userService = userService;
         binder.bindInstanceFields(this);
         final var content = createContent();
         add(content);
@@ -51,23 +49,15 @@ public class EditUserFormView extends VerticalLayout implements HasUrlParameter<
         this.userEmail = userEmail;
     }
 
-    @Override
     public void setUser(@NonNull UpdateUserRequest user) {
         binder.setBean(user);
     }
 
-    @Override
-    public boolean isFormValid() {
-        return binder.validate().isOk();
-    }
-
-    @Override
-    public void navigateToUserListView() {
+    private void navigateToUserListView() {
         getUI().ifPresent(ui -> ui.navigate(UserListView.class));
     }
 
-    @Override
-    public void showErrorMessage(@NonNull String message) {
+    private void showErrorMessage(@NonNull String message) {
         final var errorNotification = new Notification(message, 3000);
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         errorNotification.open();
@@ -91,10 +81,23 @@ public class EditUserFormView extends VerticalLayout implements HasUrlParameter<
         saveButton.addClickShortcut(Key.ENTER);
         cancelButton.addClickShortcut(Key.ESCAPE);
 
-        saveButton.addClickListener(click -> editUserFormPresenter.handleSaveUserButtonClick(userEmail, binder.getBean()));
+        saveButton.addClickListener(click -> handleSaveUserButtonClick(userEmail, binder.getBean()));
         cancelButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate(UserListView.class)));
 
         return new HorizontalLayout(saveButton, cancelButton);
+    }
+
+    private void handleSaveUserButtonClick(@NonNull String userEmail, @NonNull UpdateUserRequest updateUserRequest) {
+        if (!binder.validate().isOk()) {
+            return;
+        }
+
+        try {
+            userService.updateUser(userEmail, updateUserRequest);
+            navigateToUserListView();
+        } catch (Exception exception) {
+            showErrorMessage(exception.getMessage());
+        }
     }
 
 }
