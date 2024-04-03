@@ -4,7 +4,7 @@ import com.classic.elearning.course.domain.*;
 import com.classic.elearning.course.usecase.SolveQuizUseCase;
 import com.classic.elearning.course.usecase.model.SolveQuizModel;
 import com.classic.elearning.user.domain.User;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 
 import java.util.Map;
 import java.util.stream.Collectors;

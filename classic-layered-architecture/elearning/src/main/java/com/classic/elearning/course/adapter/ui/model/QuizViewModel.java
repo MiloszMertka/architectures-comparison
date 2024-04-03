@@ -1,9 +1,7 @@
 package com.classic.elearning.course.adapter.ui.model;
 
-import com.classic.elearning.course.adapter.ui.model.QuestionViewModel;
-import com.classic.elearning.course.adapter.ui.model.QuizResultViewModel;
 import com.classic.elearning.course.domain.Quiz;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

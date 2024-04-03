@@ -5,7 +5,7 @@ import com.classic.elearning.course.adapter.dto.RemoveStudentsFromCourseRequest;
 import com.classic.elearning.course.adapter.ui.AdminCourseStudentsListUI;
 import com.classic.elearning.course.adapter.ui.presenter.AdminCourseStudentsListPresenter;
 import com.classic.elearning.shared.view.MainLayout;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

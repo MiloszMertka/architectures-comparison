@@ -1,7 +1,7 @@
 package com.classic.elearning.course.adapter.dto;
 
 import com.classic.elearning.course.usecase.model.CreateCourseModel;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

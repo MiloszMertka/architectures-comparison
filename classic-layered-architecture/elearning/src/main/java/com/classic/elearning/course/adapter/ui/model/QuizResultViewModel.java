@@ -1,7 +1,7 @@
 package com.classic.elearning.course.adapter.ui.model;
 
 import com.classic.elearning.course.domain.QuizResult;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 import com.classic.elearning.user.domain.User;
 
 public record QuizResultViewModel(

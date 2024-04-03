@@ -1,9 +1,7 @@
 package com.classic.elearning.course.adapter.database;
 
-import com.classic.elearning.course.adapter.database.QuestionSchema;
-import com.classic.elearning.course.adapter.database.QuizResultSchema;
 import com.classic.elearning.course.domain.Quiz;
-import com.classic.elearning.user.adapter.database.UserSchema;
+import com.classic.elearning.user.infrastructure.database.UserSchema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

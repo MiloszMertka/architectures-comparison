@@ -6,7 +6,7 @@ import com.classic.elearning.course.domain.CourseRepository;
 import com.classic.elearning.course.domain.Quiz;
 import com.classic.elearning.course.usecase.CreateQuizUseCase;
 import com.classic.elearning.course.usecase.model.CreateQuizModel;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 
 import java.time.Instant;
 import java.time.ZoneId;

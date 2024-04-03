@@ -1,7 +1,6 @@
 package com.classic.elearning.course.adapter.database;
 
-import com.classic.elearning.course.adapter.database.CourseSchema;
-import com.classic.elearning.user.adapter.database.UserSchema;
+import com.classic.elearning.user.infrastructure.database.UserSchema;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

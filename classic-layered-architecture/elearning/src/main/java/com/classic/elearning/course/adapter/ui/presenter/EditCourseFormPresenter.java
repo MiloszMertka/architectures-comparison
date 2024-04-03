@@ -3,9 +3,9 @@ package com.classic.elearning.course.adapter.ui.presenter;
 import com.classic.elearning.course.adapter.dto.UpdateCourseRequest;
 import com.classic.elearning.course.adapter.ui.EditCourseFormUI;
 import com.classic.elearning.course.usecase.UpdateCourseUseCase;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 import com.classic.elearning.user.domain.User;
-import com.classic.elearning.user.usecase.BrowseUsersUseCase;
+import com.classic.elearning.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EditCourseFormPresenter {
 
     private final UpdateCourseUseCase updateCourseUseCase;
-    private final BrowseUsersUseCase browseUsersUseCase;
+    private final UserService userService;
 
     @Setter
     private EditCourseFormUI editCourseFormUI;
@@ -27,7 +27,7 @@ public class EditCourseFormPresenter {
     @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ADMIN')")
     public void handlePageLoad() {
-        final var teachers = browseUsersUseCase.browseUsers().stream()
+        final var teachers = userService.browseUsers().stream()
                 .filter(User::isTeacher)
                 .map(UserViewModel::fromUser)
                 .toList();

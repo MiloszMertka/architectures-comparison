@@ -2,9 +2,9 @@ package com.classic.elearning.user.infrastructure.view;
 
 import com.classic.elearning.shared.view.HomeView;
 import com.classic.elearning.shared.view.MainLayout;
-import com.classic.elearning.user.adapter.dto.ChangePasswordRequest;
-import com.classic.elearning.user.adapter.ui.ChangePasswordFormUI;
-import com.classic.elearning.user.adapter.ui.presenter.ChangePasswordFormPresenter;
+import com.classic.elearning.user.infrastructure.dto.ChangePasswordRequest;
+import com.classic.elearning.user.infrastructure.ui.ChangePasswordFormUI;
+import com.classic.elearning.user.infrastructure.ui.presenter.ChangePasswordFormPresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;

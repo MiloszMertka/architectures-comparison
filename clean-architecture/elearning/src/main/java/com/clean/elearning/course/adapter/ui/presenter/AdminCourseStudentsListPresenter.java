@@ -8,7 +8,7 @@ import com.clean.elearning.course.usecase.RemoveStudentsFromCourseUseCase;
 import com.clean.elearning.user.adapter.ui.model.UserViewModel;
 import com.clean.elearning.user.domain.User;
 import com.clean.elearning.user.usecase.BrowseUsersUseCase;
-import com.clean.elearning.user.usecase.ViewCourseUseCase;
+import com.clean.elearning.course.usecase.ViewCourseUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

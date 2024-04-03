@@ -6,7 +6,7 @@ import com.classic.elearning.course.domain.CourseRepository;
 import com.classic.elearning.course.usecase.RemoveCourseMaterialUseCase;
 import com.classic.elearning.course.usecase.model.RemoveCourseMaterialModel;
 import com.classic.elearning.course.usecase.port.FileRepository;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 
 public class RemoveCourseMaterialInteractor implements RemoveCourseMaterialUseCase {
 

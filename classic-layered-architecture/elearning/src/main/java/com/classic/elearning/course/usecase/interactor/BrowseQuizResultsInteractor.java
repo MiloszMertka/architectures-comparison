@@ -6,7 +6,7 @@ import com.classic.elearning.course.domain.Quiz;
 import com.classic.elearning.course.domain.QuizResult;
 import com.classic.elearning.course.usecase.BrowseQuizResultsUseCase;
 import com.classic.elearning.user.domain.User;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 
 import java.util.Map;
 

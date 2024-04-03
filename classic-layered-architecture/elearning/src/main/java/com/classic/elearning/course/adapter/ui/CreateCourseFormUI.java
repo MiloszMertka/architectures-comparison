@@ -1,6 +1,6 @@
 package com.classic.elearning.course.adapter.ui;
 
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package com.classic.elearning.course.usecase.interactor;
 import com.classic.elearning.course.domain.Course;
 import com.classic.elearning.course.domain.CourseRepository;
 import com.classic.elearning.course.usecase.BrowseUserCoursesUseCase;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 
 import java.util.List;
 

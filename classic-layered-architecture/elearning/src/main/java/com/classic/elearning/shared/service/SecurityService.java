@@ -1,8 +1,8 @@
 package com.classic.elearning.shared.service;
 
-import com.classic.elearning.user.adapter.database.UserSchema;
+import com.classic.elearning.user.infrastructure.database.UserSchema;
 import com.classic.elearning.user.domain.User;
-import com.classic.elearning.user.usecase.port.AuthContext;
+import com.classic.elearning.user.service.port.AuthContext;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

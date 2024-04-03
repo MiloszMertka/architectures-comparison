@@ -5,10 +5,10 @@ import com.classic.elearning.course.adapter.dto.RemoveStudentsFromCourseRequest;
 import com.classic.elearning.course.adapter.ui.AdminCourseStudentsListUI;
 import com.classic.elearning.course.usecase.AssignStudentsToCourseUseCase;
 import com.classic.elearning.course.usecase.RemoveStudentsFromCourseUseCase;
-import com.classic.elearning.user.adapter.ui.model.UserViewModel;
+import com.classic.elearning.user.infrastructure.ui.model.UserViewModel;
 import com.classic.elearning.user.domain.User;
-import com.classic.elearning.user.usecase.BrowseUsersUseCase;
-import com.classic.elearning.user.usecase.ViewCourseUseCase;
+import com.classic.elearning.user.service.UserService;
+import com.classic.elearning.course.usecase.ViewCourseUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class AdminCourseStudentsListPresenter {
 
     private final AssignStudentsToCourseUseCase assignStudentsToCourseUseCase;
     private final RemoveStudentsFromCourseUseCase removeStudentsFromCourseUseCase;
-    private final BrowseUsersUseCase browseUsersUseCase;
+    private final UserService userService;
     private final ViewCourseUseCase viewCourseUseCase;
 
     @Setter
@@ -36,7 +36,7 @@ public class AdminCourseStudentsListPresenter {
         final var courseStudents = course.getStudents().stream()
                 .map(UserViewModel::fromUser)
                 .toList();
-        final var studentsAvailableToAssign = browseUsersUseCase.browseUsers().stream()
+        final var studentsAvailableToAssign = userService.browseUsers().stream()
                 .filter(User::isStudent)
                 .filter(user -> !course.getStudents().contains(user))
                 .map(UserViewModel::fromUser)

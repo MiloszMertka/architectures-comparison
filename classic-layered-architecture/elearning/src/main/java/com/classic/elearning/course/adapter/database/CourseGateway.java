@@ -1,10 +1,8 @@
 package com.classic.elearning.course.adapter.database;
 
-import com.classic.elearning.course.adapter.database.CourseSchema;
-import com.classic.elearning.course.adapter.database.CourseSchemaRepository;
 import com.classic.elearning.course.domain.Course;
 import com.classic.elearning.course.domain.CourseRepository;
-import com.classic.elearning.user.adapter.database.UserSchema;
+import com.classic.elearning.user.infrastructure.database.UserSchema;
 import com.classic.elearning.user.domain.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

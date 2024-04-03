@@ -1,10 +1,9 @@
 package com.classic.elearning.user.infrastructure.view;
 
 import com.classic.elearning.shared.view.MainLayout;
-import com.classic.elearning.user.adapter.dto.UpdateUserRequest;
-import com.classic.elearning.user.adapter.ui.EditUserFormUI;
-import com.classic.elearning.user.adapter.ui.presenter.EditUserFormPresenter;
-import com.classic.elearning.user.infrastructure.view.UserListView;
+import com.classic.elearning.user.infrastructure.dto.UpdateUserRequest;
+import com.classic.elearning.user.infrastructure.ui.EditUserFormUI;
+import com.classic.elearning.user.infrastructure.ui.presenter.EditUserFormPresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
