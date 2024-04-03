@@ -65,6 +65,10 @@ public class CourseListPresenter {
         courseListUI.navigateToCreateQuizFormView(courseName);
     }
 
+    public void handleShowQuizResultsButtonClick(@NonNull String courseName, @NonNull String quizName) {
+        courseListUI.navigateToQuizResultListView(courseName, quizName);
+    }
+
     public void handleEditQuizButtonClick(@NonNull String courseName, @NonNull QuizViewModel quiz) {
         final var updateQuizRequest = createUpdateQuizRequest(quiz);
         courseListUI.navigateToEditQuizFormView(courseName, updateQuizRequest);

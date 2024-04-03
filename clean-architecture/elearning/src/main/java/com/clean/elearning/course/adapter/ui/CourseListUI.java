@@ -17,6 +17,8 @@ public interface CourseListUI {
 
     void navigateToCreateQuizFormView(String courseName);
 
+    void navigateToQuizResultListView(String courseName, String quizName);
+
     void navigateToEditQuizFormView(String courseName, UpdateQuizRequest updateQuizRequest);
 
     void showDeleteQuizConfirmDialog(String courseName, String quizName);

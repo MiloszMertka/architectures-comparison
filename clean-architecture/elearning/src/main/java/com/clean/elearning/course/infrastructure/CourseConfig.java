@@ -87,4 +87,9 @@ class CourseConfig {
         return new SolveQuizInteractor(courseRepository, authContext);
     }
 
+    @Bean
+    public BrowseQuizResultsUseCase browseQuizResults(CourseRepository courseRepository, AuthContext authContext) {
+        return new BrowseQuizResultsInteractor(courseRepository, authContext);
+    }
+
 }

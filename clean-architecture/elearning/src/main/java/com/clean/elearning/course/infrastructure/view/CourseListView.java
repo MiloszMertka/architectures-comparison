@@ -108,6 +108,13 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
     }
 
     @Override
+    public void navigateToQuizResultListView(@NonNull String courseName, @NonNull String quizName) {
+        final var courseNameRouteParam = new RouteParam("courseName", courseName);
+        final var quizNameRouteParam = new RouteParam("quizName", quizName);
+        getUI().ifPresent(ui -> ui.navigate(QuizResultListView.class, courseNameRouteParam, quizNameRouteParam));
+    }
+
+    @Override
     public void navigateToEditQuizFormView(@NonNull String courseName, @NonNull UpdateQuizRequest updateQuizRequest) {
         final var courseNameRouteParam = new RouteParam("courseName", courseName);
         final var quizNameRouteParam = new RouteParam("quizName", updateQuizRequest.getName());
@@ -218,6 +225,7 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
                     final var container = new VerticalLayout(name, openingTime, closingTime);
                     container.setPadding(false);
                     addSolveQuizButtonForStudent(container, courseName, quiz);
+                    addShowQuizResultsButtonForTeacher(container, courseName, quiz);
                     addEditQuizButtonForTeacher(container, courseName, quiz);
                     addDeleteQuizButtonForTeacher(container, courseName, quiz);
                     return (Component) container;
@@ -276,6 +284,21 @@ public class CourseListView extends VerticalLayout implements CourseListUI {
         deleteQuizButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         deleteQuizButton.addClickListener(event -> courseListPresenter.handleDeleteQuizButtonClick(courseName, quiz.name()));
         return deleteQuizButton;
+    }
+
+    private void addShowQuizResultsButtonForTeacher(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
+        if (!securityService.getCurrentUser().isTeacher()) {
+            return;
+        }
+
+        final var showQuizResultsButton = createShowQuizResultsButton(courseName, quiz);
+        courseDetails.add(showQuizResultsButton);
+    }
+
+    private Component createShowQuizResultsButton(String courseName, QuizViewModel quiz) {
+        final var showQuizResultsButton = new Button("Show quiz results");
+        showQuizResultsButton.addClickListener(event -> courseListPresenter.handleShowQuizResultsButtonClick(courseName, quiz.name()));
+        return showQuizResultsButton;
     }
 
     private void addEditQuizButtonForTeacher(HasComponents courseDetails, String courseName, QuizViewModel quiz) {
